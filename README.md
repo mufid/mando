@@ -1,4 +1,1 @@
-ppl-sakti-kita
-==============
-
-PPL Sakti Kita Semua
+# DISCLAIMER: NAMA MASIH DUMMY. NAMA MASIH DUMMY!
