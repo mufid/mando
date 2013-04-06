@@ -1,25 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".SettingsWelcome" >
 
-    <Button
-        android:id="@+id/buttonPinConf"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/welcome_welcometext"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:text="@string/setting_terakhir" />
+    
+    <Button
+        android:id="@+id/welcome_buttonPinConf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/setting_pin" />
 
     <Button
-        android:id="@+id/buttonCommandConf"
-        android:layout_width="wrap_content"
+        android:id="@+id/welcome_buttonCommandConf"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/buttonPinConf"
         android:text="@string/setting_command" />
 
-</RelativeLayout>
+</LinearLayout>
