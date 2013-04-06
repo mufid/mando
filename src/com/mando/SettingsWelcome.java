@@ -8,6 +8,8 @@ import com.mando.helper.SettingsHelper;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -32,6 +34,16 @@ public class SettingsWelcome extends SherlockActivity {
 		welcomeLabel.setText(teks);
 		
 		SettingsHelper.store("terakhir", new Date().toString());
+		
+		// Kalau tombol dipencet, laksanakan kawan
+		Button changePin = (Button) findViewById(R.id.welcome_buttonPinConf);
+		Button commands = (Button) findViewById(R.id.welcome_buttonCommandConf);
+		
+		changePin.setOnClickListener(new OnClickListener() {			
+			public void onClick(View arg0) {
+				
+			}
+		});
 	}
 	
 	@Override
