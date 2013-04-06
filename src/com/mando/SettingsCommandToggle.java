@@ -10,6 +10,7 @@ public class SettingsCommandToggle extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//setContentView(layoutResId)
 	}
 	
 	@Override

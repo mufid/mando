@@ -7,6 +7,7 @@ import com.mando.helper.SettingsHelper;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -14,10 +15,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class SettingsWelcome extends SherlockActivity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTheme(R.style.Theme_Sherlock_Light);
 		setContentView(R.layout.activity_settings_welcome);
 		
 		SettingsHelper.init(this);
@@ -41,13 +43,25 @@ public class SettingsWelcome extends SherlockActivity {
 		
 		changePin.setOnClickListener(new OnClickListener() {			
 			public void onClick(View arg0) {
-				
+	            Intent i = new Intent(getApplicationContext(), SettingsPINChange.class);
+	            // Set the request code to any code you like, you can identify the
+	            // callback via this code
+	            startActivity(i);
+			}
+		});
+		
+		commands.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				Intent i = new Intent(getApplicationContext(), SettingsCommandToggle.class);
+				startActivity(i);
 			}
 		});
 	}
 	
 	@Override
 	protected void onDestroy() {
-		
+		SettingsHelper.init(this);
+		SettingsHelper.store("terakhir", new Date().toString());
+		super.onDestroy();
 	}
 }
