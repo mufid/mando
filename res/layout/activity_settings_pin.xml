@@ -11,7 +11,7 @@
         android:text="@string/setting_pin_saatini" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/pin_current"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -27,11 +27,11 @@
         android:text="@string/setting_pin_baru" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/pin_new"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="numberPassword" />
 
     <TextView
         android:id="@+id/textView3"
@@ -40,10 +40,10 @@
         android:text="@string/setting_pin_barulagi" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/pin_newagain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPassword" />
+        android:inputType="numberPassword" />
     
 </LinearLayout>

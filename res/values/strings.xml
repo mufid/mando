@@ -12,5 +12,9 @@
     <string name="setting_pin_saatini">PIN Saat Ini</string>
     <string name="setting_pin_baru">PIN baru</string>
     <string name="setting_pin_barulagi">PIN baru (masukkan sekali lagi)</string>
+    <string name="setting_pin_wrongcurrentpin">PIN aktual tidak sama!</string>
+    <string name="setting_pin_notmatch">Pasangan PIN baru tidak cocok</string>
+    <string name="setting_fieldrequired">Kolom %s belum diisi</string>
+    <string name="save">Simpan</string>
 
 </resources>
