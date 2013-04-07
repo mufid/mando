@@ -9,6 +9,7 @@ public class SettingsCommandCustom extends SherlockActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setTheme(R.style.Theme_Sherlock_Light);
 	}
 	
 	@Override

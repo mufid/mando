@@ -1,3 +1,9 @@
+# WELCOME TO MANDO
+
+Latest result:
+
+![Mando](http://mufid.github.io/images/post/mando.png)
+
 # PANDUAN KOMPILASI
 
 1. Download [ABS](https://github.com/JakeWharton/ActionBarSherlock/archive/4.2.0.zip)
