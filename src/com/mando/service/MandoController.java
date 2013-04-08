@@ -1,5 +1,10 @@
 package com.mando.service;
 
+import java.util.List;
+
+import android.location.Location;
+import android.location.LocationManager;
+
 import com.mando.helper.SMS;
 
 /**
@@ -24,8 +29,24 @@ public class MandoController {
 		return null;
 	}
 
-	public static String getLocation() {
-		return "";
+	public static String getLocation(LocationManager locationManager) {
+		// Saya nemu cara buat dapetin lokasi dari semua sumber yang ada,
+		// kalau-kalau GPSnya lagi mati.
+		// Modifikasi dari kode di http://stackoverflow.com/a/4736240
+
+		List<String> locProviders = locationManager.getProviders(true);
+		Location location;
+
+		for (int i = locProviders.size() - 1; i >= 0; i--) {
+			location = locationManager
+					.getLastKnownLocation(locProviders.get(i));
+			if (location != null) {
+				return "Latitude : " + location.getLatitude()
+						+ "\nLongitude : " + location.getLongitude();
+			}
+		}
+
+		return "Lokasi gagal didapat";
 	}
 
 	public static String forwardSMS(SMS message) {
