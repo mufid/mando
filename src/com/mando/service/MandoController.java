@@ -30,23 +30,25 @@ public class MandoController {
 	}
 
 	public static String getLocation(LocationManager locationManager) {
-		// Saya nemu cara buat dapetin lokasi dari semua sumber yang ada,
-		// kalau-kalau GPSnya lagi mati.
-		// Modifikasi dari kode di http://stackoverflow.com/a/4736240
+		List<String> providers = locationManager.getProviders(true);
 
-		List<String> locProviders = locationManager.getProviders(true);
-		Location location;
+		String res = "";
 
-		for (int i = locProviders.size() - 1; i >= 0; i--) {
-			location = locationManager
-					.getLastKnownLocation(locProviders.get(i));
-			if (location != null) {
-				return "Latitude : " + location.getLatitude()
-						+ "\nLongitude : " + location.getLongitude();
+		for (int i = 0; i < providers.size(); i++) {
+			String provider = providers.get(i);
+			Location loc = locationManager.getLastKnownLocation(provider);
+
+			res += provider + "\n";
+
+			if (loc == null) {
+				res += "null\n";
+			} else {
+				res += "Latitude : " + loc.getLatitude() + "\nLongitude : "
+						+ loc.getLongitude() + "\n";
 			}
 		}
 
-		return "Lokasi gagal didapat";
+		return res + "\b";
 	}
 
 	public static String forwardSMS(SMS message) {
