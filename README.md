@@ -20,7 +20,9 @@ Latest result:
 		    src
 		    gen
 		    bin
-3. Clean, Build, Build, Clean, Build, Build, Deploy ke device
+
+3. Import project `library` tersebut ke dalam eclipse
+4. Clean, Build, Build, Clean, Build, Build, Deploy ke device
 
 # PANDUAN NGODING
 
