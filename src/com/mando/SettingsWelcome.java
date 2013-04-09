@@ -65,7 +65,7 @@ public class SettingsWelcome extends SherlockActivity {
 		// Kalau tombol dipencet, laksanakan kawan
 		Button changePin = (Button) findViewById(R.id.welcome_buttonPinConf);
 		Button commands = (Button) findViewById(R.id.welcome_buttonCommandConf);
-		Button test = (Button) findViewById(R.id.welcome_buttenTest);
+		
 
 		changePin.setOnClickListener(new OnClickListener() {
 			public void onClick(View arg0) {
@@ -86,13 +86,7 @@ public class SettingsWelcome extends SherlockActivity {
 			}
 		});
 
-		test.setOnClickListener(new OnClickListener() {
-			public void onClick(View arg0) {
-				Intent i = new Intent(getApplicationContext(),
-						SettingsTest.class);
-				startActivity(i);
-			}
-		});
+
 	}
 
 	@Override
