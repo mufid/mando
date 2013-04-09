@@ -4,10 +4,16 @@ import java.util.Date;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.SettingsHelper;
+import com.mando.service.MainService;
+import com.mando.service.MainService.LocalBinder;
 
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,12 +21,32 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class SettingsWelcome extends SherlockActivity {
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className,
+                IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            LocalBinder binder = (LocalBinder) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            
+        }
+
+    };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTheme(R.style.Theme_Sherlock_Light);
 		setContentView(R.layout.activity_settings_welcome);
+
+		// Service start
+        //Intent intent = new Intent(this, MainService.class);
+        //bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		
 		SettingsHelper.init(this);
 		String terakhir = SettingsHelper.read("terakhir");
@@ -34,7 +60,6 @@ public class SettingsWelcome extends SherlockActivity {
 		
 		TextView welcomeLabel = (TextView) findViewById(R.id.welcome_welcometext);
 		welcomeLabel.setText(teks);
-		
 		SettingsHelper.store("terakhir", new Date().toString());
 		
 		// Kalau tombol dipencet, laksanakan kawan
