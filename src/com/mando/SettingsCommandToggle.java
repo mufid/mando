@@ -11,7 +11,7 @@ public class SettingsCommandToggle extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setTheme(R.style.Theme_Sherlock_Light);
-		//setContentView(layoutResId)
+		setContentView(R.layout.activity_settings_commandtoggle);
 	}
 	
 	@Override

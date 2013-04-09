@@ -17,5 +17,6 @@
     <string name="setting_fieldrequired">Kolom %s belum diisi</string>
     <string name="save">Simpan</string>
     <string name="test">Tes</string>
+    <string name="setting_toggle_welcome">Untuk melakukan kustomisasi perintah, tap pada nama perintah</string>
 
 </resources>

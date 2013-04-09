@@ -43,8 +43,7 @@ public class SettingsTest extends SherlockActivity {
 					int position, long id) {
 				String item = (String) parent.getItemAtPosition(position);
 				if (item.equals("Lokasi")) {
-					MandoController.getLocation(locationManager,
-							locationListener);
+
 
 				} else if (item.equals("SMS")) {
 
