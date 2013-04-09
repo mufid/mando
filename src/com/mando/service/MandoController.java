@@ -1,10 +1,8 @@
 package com.mando.service;
 
-import java.util.List;
-
-import android.location.Location;
 import android.location.LocationManager;
 
+import com.mando.helper.CallbackLocation;
 import com.mando.helper.SMS;
 
 /**
@@ -29,26 +27,16 @@ public class MandoController {
 		return null;
 	}
 
-	public static String getLocation(LocationManager locationManager) {
-		List<String> providers = locationManager.getProviders(true);
+	public static String getLocation(LocationManager locationManager,
+			CallbackLocation locationListener) {
+		final long maxTime = 1000 * 5 * 60;
+		final long interval = 1000 * 1;
 
-		String res = "";
+		String provider = LocationManager.GPS_PROVIDER;
+		locationManager
+				.requestLocationUpdates(provider, 0, 0, locationListener);
 
-		for (int i = 0; i < providers.size(); i++) {
-			String provider = providers.get(i);
-			Location loc = locationManager.getLastKnownLocation(provider);
-
-			res += provider + "\n";
-
-			if (loc == null) {
-				res += "null\n";
-			} else {
-				res += "Latitude : " + loc.getLatitude() + "\nLongitude : "
-						+ loc.getLongitude() + "\n";
-			}
-		}
-
-		return res + "\b";
+		return "";
 	}
 
 	public static String forwardSMS(SMS message) {
