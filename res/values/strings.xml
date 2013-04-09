@@ -18,5 +18,7 @@
     <string name="save">Simpan</string>
     <string name="test">Tes</string>
     <string name="setting_toggle_welcome">Untuk melakukan kustomisasi perintah, tap pada nama perintah</string>
+    <string name="setting_pin_lengthmismatch">Panjang PIN haruslah dalam 4 digit</string>
+    <string name="setting_pin_changed">PIN berhasil dirubah</string>
 
 </resources>

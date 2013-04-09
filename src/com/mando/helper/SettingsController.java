@@ -22,13 +22,13 @@ public class SettingsController {
 	 *         key nya berarti #resource yang ada salah dan String nya adalah
 	 *         pesan kesalahannya
 	 */
-	public Hashtable<Integer, String> isValidPIN(String oldPin, String newPin,
+	public Hashtable<Integer, String> checkValidPIN(String oldPin, String newPin,
 			String newPin2) {
 		SettingsHelper.init(c);
 		Hashtable<Integer, String> ht = new Hashtable<Integer, String>();
 		// Check the old pin
-		if (getCurrentPIN() != null && getCurrentPIN().length() > 0
-				&& !getCurrentPIN().equals(oldPin)) {
+		if (getCurrentPIN(true) != null && getCurrentPIN(true).length() > 0
+				&& !getCurrentPIN(true).equals(oldPin)) {
 			ht.put(R.id.pin_current,
 					c.getString(R.string.setting_pin_wrongcurrentpin));
 		}
@@ -37,6 +37,10 @@ public class SettingsController {
 			ht.put(R.id.pin_new, String.format(
 					c.getString(R.string.setting_fieldrequired),
 					R.string.setting_pin_baru));
+		}
+		// Cek apakah panjang PIN benar-benar 4
+		if (newPin.length() != 4) {
+			ht.put(R.id.pin_new, c.getString(R.string.setting_pin_lengthmismatch));
 		}
 		// Check if the required field filled out
 		if (newPin2.length() == 0) {
@@ -51,8 +55,18 @@ public class SettingsController {
 		}
 		return ht;
 	}
+	
+	public void setPIN(String pin) {
+		SettingsHelper.init(c);
+		SettingsHelper.store("pin", pin);
+	}
 
 	public String getCurrentPIN() {
+		String pin = getCurrentPIN(true);
+		return pin != null && pin.length() == 4 ? pin : "1234";
+	}
+	
+	public String getCurrentPIN(boolean strict) {
 		SettingsHelper.init(c);
 		return SettingsHelper.read("pin");
 	}
