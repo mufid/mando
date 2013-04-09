@@ -3,7 +3,10 @@
     package="com.mando"
     android:versionCode="1"
     android:versionName="1.0" >
-
+	
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	<uses-permission android:name="android.permission.INTERNET" />
+    
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="16" />
@@ -27,6 +30,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.mando.SettingsPINChange"></activity>
+        <activity android:name="com.mando.SettingsTest"></activity>
 	    <service android:name=".service.MainService"
 	        android:enabled="true">
 		</service>
