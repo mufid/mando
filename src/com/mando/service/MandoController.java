@@ -23,7 +23,7 @@ public class MandoController {
      * 
      * @param s
      */
-    public static void processSMS(String s) {
+    public static void processSMS(String s, String n) {
         // Ini yang ada di UCRS pertama
         // index legends:
         // 0 : forward SMS
@@ -68,7 +68,6 @@ public class MandoController {
             if (words.length < 4)
                 return; // invalid forward
             try {
-                int numInt = Integer.parseInt(words[2]);
                 String num = words[2];
                 String msg = "";
                 for (int i = 3; i < words.length; i++)
@@ -124,7 +123,7 @@ public class MandoController {
             getLocation();
         }
 
-        SMS sms = new SMS("081511967009", result);
+        SMS sms = new SMS(n, result);
 
         if (result.length() > 0)
             sendSMS(sms);
@@ -236,7 +235,6 @@ public class MandoController {
 
     public static String forwardSMS(SMS sms) {
         sendSMS(sms);
-
         return "";
     }
 }
