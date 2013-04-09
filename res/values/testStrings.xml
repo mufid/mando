@@ -2,6 +2,6 @@
 <resources>
 	<string-array name="testing_menu_strings">
     	<item>Lokasi</item>
-    	<item>SMS</item>
-    </string-array>    
+    	<item>Baca SMS</item>
+    </string-array>
 </resources>
