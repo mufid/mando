@@ -44,6 +44,9 @@ public class SettingsTest extends SherlockActivity {
             public void onItemClick(AdapterView<?> parent, final View view,
                     int position, long id) {
                 String item = (String) parent.getItemAtPosition(position);
+
+                MandoController.c = getApplicationContext();
+
                 if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[0])) {
                     // MandoController.getLocation(locationManager,
@@ -58,6 +61,10 @@ public class SettingsTest extends SherlockActivity {
                                 + sepuluhSMS[i].getMessage();
                         Toast.makeText(getApplicationContext(), teks, 1).show();
                     }
+                } else if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[2])) {
+                    Toast.makeText(getApplicationContext(),
+                            MandoController.getContacts("Fi "), 1).show();
                 }
             }
 

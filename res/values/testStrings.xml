@@ -3,5 +3,6 @@
 	<string-array name="testing_menu_strings">
     	<item>Lokasi</item>
     	<item>Baca SMS</item>
+        <item>Ambil Kontak</item>
     </string-array>
 </resources>
