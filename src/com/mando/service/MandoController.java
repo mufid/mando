@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
 
 import com.mando.helper.SMS;
@@ -202,19 +203,32 @@ public class MandoController {
         return "";
     }
 
-    public static String getSMS(int jumlah, Context context) {
-        String res = "";
+    public static SMS[] getSMS(int jumlah, Context context) {
+        SMS[] res = new SMS[10];
         Uri smsUri = Uri.parse("content://sms/inbox");
         Cursor cursor = context.getContentResolver().query(smsUri,
-                new String[] { "address", "date", "body" }, null, null,
-                "date DESC");
+                new String[] { "address", "body" }, null, null, "date DESC");
 
         for (int i = 0; i < jumlah && cursor.moveToNext(); i++) {
-            String address = cursor.getString(0);
-            String date = cursor.getString(1);
-            String body = cursor.getString(2);
+            String addressNum = cursor.getString(0);
+            Uri addrNameUri = Uri.withAppendedPath(
+                    PhoneLookup.CONTENT_FILTER_URI, Uri.encode(addressNum));
+            Cursor addr = context.getContentResolver()
+                    .query(addrNameUri,
+                            new String[] { PhoneLookup.DISPLAY_NAME }, null,
+                            null, null);
+            String addressName;
 
-            res += address + ", " + date + " : \n" + body + "\n";
+            if (addr.getCount() > 0) {
+                addr.moveToNext();
+                addressName = addr.getString(0) + " (" + addressNum + ")";
+            } else {
+                addressName = addressNum;
+            }
+
+            String body = cursor.getString(1);
+
+            res[i] = new SMS(addressName, body);
         }
 
         return res;

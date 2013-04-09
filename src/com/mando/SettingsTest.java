@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.CallbackLocation;
+import com.mando.helper.SMS;
 import com.mando.service.MandoController;
 
 // Implement LocationListener, biar bisa update lokasi.
@@ -43,15 +44,20 @@ public class SettingsTest extends SherlockActivity {
             public void onItemClick(AdapterView<?> parent, final View view,
                     int position, long id) {
                 String item = (String) parent.getItemAtPosition(position);
-                if (item.equals("Lokasi")) {
+                if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[0])) {
                     // MandoController.getLocation(locationManager,
                     // locationListener);
 
-                } else if (item.equals("Baca SMS")) {
-                    Toast.makeText(
-                            getApplicationContext(),
-                            MandoController.getSMS(10, getApplicationContext()),
-                            Toast.LENGTH_LONG).show();
+                } else if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[1])) {
+                    SMS sepuluhSMS[] = MandoController.getSMS(10,
+                            getApplicationContext());
+                    for (int i = 0; i < sepuluhSMS.length; i++) {
+                        String teks = sepuluhSMS[i].getNumber() + " :\n"
+                                + sepuluhSMS[i].getMessage();
+                        Toast.makeText(getApplicationContext(), teks, 1).show();
+                    }
                 }
             }
 
