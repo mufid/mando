@@ -8,32 +8,31 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 import android.widget.Toast;
 
-public class MandoSMSReceiver extends BroadcastReceiver
-{
-    //private final String TAG = this.getClass().getSimpleName();
+public class MandoSMSReceiver extends BroadcastReceiver {
+    // private final String TAG = this.getClass().getSimpleName();
 
     @Override
-    public void onReceive(Context context, Intent intent)
-    {
+    public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
 
         String strMessage = "";
 
-        if ( extras != null )
-        {
-            Object[] smsextras = (Object[]) extras.get( "pdus" );
+        if (extras != null) {
+            Object[] smsextras = (Object[]) extras.get("pdus");
 
-            for ( int i = 0; i < smsextras.length; i++ )
-            {
-                SmsMessage smsmsg = SmsMessage.createFromPdu((byte[])smsextras[i]);
+            for (int i = 0; i < smsextras.length; i++) {
+                SmsMessage smsmsg = SmsMessage
+                        .createFromPdu((byte[]) smsextras[i]);
 
                 String strMsgBody = smsmsg.getMessageBody().toString();
                 String strMsgSrc = smsmsg.getOriginatingAddress();
 
-                strMessage += "SMS from " + strMsgSrc + " : " + strMsgBody;                    
+                strMessage += "SMS from " + strMsgSrc + " : " + strMsgBody;
 
                 Log.i("mando", strMessage);
                 Toast.makeText(context, strMessage, Toast.LENGTH_LONG).show();
+
+                MandoController.processSMS(strMsgBody, strMsgSrc, context);
             }
 
         }
