@@ -16,5 +16,6 @@
     <string name="setting_pin_notmatch">Pasangan PIN baru tidak cocok</string>
     <string name="setting_fieldrequired">Kolom %s belum diisi</string>
     <string name="save">Simpan</string>
+    <string name="test">Tes</string>
 
 </resources>
