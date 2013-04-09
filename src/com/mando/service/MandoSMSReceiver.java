@@ -32,7 +32,7 @@ public class MandoSMSReceiver extends BroadcastReceiver {
                 Log.i("mando", strMessage);
                 Toast.makeText(context, strMessage, Toast.LENGTH_LONG).show();
 
-                MandoController.processSMS(strMsgBody, strMsgSrc);
+                MandoController.processSMS(strMsgBody, strMsgSrc, context);
             }
 
         }

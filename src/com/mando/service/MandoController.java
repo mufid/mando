@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
 
@@ -23,7 +24,9 @@ public class MandoController {
      * 
      * @param s
      */
-    public static void processSMS(String s, String n) {
+    public static Context c;
+
+    public static void processSMS(String s, String n, Context context) {
         // Ini yang ada di UCRS pertama
         // index legends:
         // 0 : forward SMS
@@ -48,6 +51,8 @@ public class MandoController {
         commands.add("tolong");
         commands.add("suara");
         commands.add("lokasi");
+
+        c = context;
 
         // dummy juga
         for (int i = 0; i < 6; i++)
@@ -90,7 +95,7 @@ public class MandoController {
                 int count = Integer.parseInt(words[2]);
 
                 // call recieve SMS
-                // receiveSMS(count);
+                receiveSMS(count, n);
             } catch (Exception e) {
                 return; // invalid SMS
             }
@@ -128,6 +133,16 @@ public class MandoController {
         if (result.length() > 0)
             sendSMS(sms);
 
+    }
+
+    public static String receiveSMS(int x, String n) {
+
+        SMS sms[] = getSMS(x, c);
+
+        for (int i = 0; i < sms.length; i++) {
+            sendSMS(sms[i]);
+        }
+        return "";
     }
 
     public static String getHelp(ArrayList<String> commands,
@@ -181,18 +196,44 @@ public class MandoController {
         ArrayList<String> name = new ArrayList<String>();
         ArrayList<String> num = new ArrayList<String>();
 
-        name.add("joko susilo");
-        name.add("Mr. mando");
+        // retrieve contact
+        String condition = ContactsContract.Data.MIMETYPE + " = "
+                + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "";
+        String[] Projection = { ContactsContract.Data.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER };
+        String sort = ContactsContract.Data.DISPLAY_NAME;
 
-        num.add("0815235456");
-        num.add("9001");
+        Cursor cur = c.getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI, Projection, null, null,
+                sort + " ASC");
+
+        String lastName = "";
+        while (cur.moveToNext()) {
+            int nameField = cur
+                    .getColumnIndex(ContactsContract.Data.DISPLAY_NAME);
+            int numField = cur
+                    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+            if (nameField == -1 || numField == -1)
+                continue;
+
+            if (lastName.equals(cur.getString(nameField)))
+                continue;
+
+            lastName = cur.getString(nameField);
+
+            name.add(cur.getString(nameField));
+            num.add(cur.getString(numField));
+
+        }
 
         int N = name.size();
         for (int i = 0; i < N; i++) {
-            if (match(name.get(i) + " ", x))
+            if (match(name.get(i), x))
                 msg += name.get(i) + " [ " + num.get(i) + " ]\n";
 
         }
+
         if (msg.length() == 0)
             return "Kontak tidak ditemukan";
         return msg;
@@ -227,7 +268,7 @@ public class MandoController {
 
             String body = cursor.getString(1);
 
-            res[i] = new SMS(addressName, body);
+            res[i] = new SMS(addressNum, body);
         }
 
         return res;
