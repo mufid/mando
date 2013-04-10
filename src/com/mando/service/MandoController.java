@@ -10,6 +10,7 @@ import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
 
 import com.mando.helper.SMS;
+import com.mando.helper.SettingsController;
 
 /**
  * Kerjain yang parser SMS
@@ -58,8 +59,9 @@ public class MandoController {
         for (int i = 0; i < 6; i++)
             isActive.add(true);
 
-        // dummy juga
-        String PIN = "1234";
+        // Baca pin dari setting
+        SettingsController settings = new SettingsController(context);
+        String PIN = settings.getCurrentPIN();
 
         String[] words = s.split(" ");
         if (words.length < 2)
