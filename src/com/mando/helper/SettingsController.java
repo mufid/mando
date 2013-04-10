@@ -1,14 +1,23 @@
 package com.mando.helper;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.mando.R;
 
 public class SettingsController {
 	private Context c;
-
+	/**
+	 * Perintah-perintah yang muncul ke pengguna
+	 * 0: TODO
+	 * 1:
+	 * 2:
+	 */
+	private int[] visibleCommands = {0, 1, 2, 4, 5};
+	
 	public SettingsController(Context c) {
 		this.c = c;
 	}
@@ -69,5 +78,82 @@ public class SettingsController {
 	public String getCurrentPIN(boolean strict) {
 		SettingsHelper.init(c);
 		return SettingsHelper.read("pin");
+	}
+	public void initCommand() {
+	    SettingsHelper.init(c);
+	    
+	    SettingsHelper.store("command-0", "forward");
+	    SettingsHelper.store("command-1", "ambil");
+        SettingsHelper.store("command-2", "kontak");
+        SettingsHelper.store("command-3", "tolong");
+        SettingsHelper.store("command-4", "suara");
+        SettingsHelper.store("command-5", "lokasi");
+        
+        SettingsHelper.store("commandactive", "111111");
+	}
+	public boolean getCommandActive(int i) {
+		SettingsHelper.init(c);
+		String activebin = SettingsHelper.read("commandactive");
+		if (activebin == null || activebin.length() == 0 || i >= activebin.length()) {
+			initCommand();
+			return true;
+		}
+		
+		return (activebin.charAt(i) == '1');
+	}
+	public void setCommandActive(int i, boolean active) {
+		StringBuilder x = new StringBuilder();
+		SettingsHelper.init(c);
+		String activebin = SettingsHelper.read("commandactive");
+		x.append(activebin);
+		char activechar = active ? '1' : '0';
+		
+		if (i >= x.length()) {
+			for (int j = 0; j < i; j++) {
+				x.append(j == i-1 ? activechar : '0');
+			}
+		}
+		
+		x.setCharAt(i, activechar);
+		
+		SettingsHelper.store("commandactive", x.toString());
+	}
+	public String getCommandString(int i) {
+		SettingsHelper.init(c);
+		String activebin = SettingsHelper.read("command-" + i);
+		if (activebin == null) initCommand();
+		activebin = SettingsHelper.read("command-" + i);
+		return activebin;
+	}
+	public boolean setCommandString(int i, String command) {
+		if (command.length() == 0) return false;
+		SettingsHelper.init(c);
+		SettingsHelper.store("command-" + i, command);
+		return true;
+	}
+	
+	public String getCommandName(int i) {
+	    switch (i) {
+	    case 0: return c.getString(R.string.command_forwardsms);
+        case 1: return c.getString(R.string.command_ambilsms);
+        case 2: return c.getString(R.string.command_contact);
+        case 3: return c.getString(R.string.command_help);
+        case 4: return c.getString(R.string.command_record);
+        case 5: return c.getString(R.string.command_loc);
+	    }
+	    return null;
+	}
+	
+	/**
+	 * Mendapatkan nama-nama command yang hanya visible ke pengguna
+	 * @return
+	 */
+	public ArrayList<Pair<Integer, String>> getCommandName() {
+	    
+	    ArrayList<Pair<Integer,String>> retval = new ArrayList<Pair<Integer, String>>();
+	    for (int i: visibleCommands) {
+	        retval.add(new Pair<Integer, String>(i, getCommandName(i)));
+        }
+	    return retval;
 	}
 }
