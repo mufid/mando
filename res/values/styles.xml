@@ -16,5 +16,14 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-
+    <style name="buttontoggle" parent="@android:style/Widget.CompoundButton">
+        <item name="android:padding">20dp</item>
+    </style>
+    <style name="activebutton" parent="buttontoggle">
+        <item name="android:text">@string/aktif</item>
+    </style>
+    <style name="activebutton" parent="buttontoggle">
+        <item name="android:background">#33B5E5</item>
+        <item name="android:text">@string/aktif_tidak</item>
+    </style>
 </resources>

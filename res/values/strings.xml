@@ -20,5 +20,17 @@
     <string name="setting_toggle_welcome">Untuk melakukan kustomisasi perintah, tap pada nama perintah</string>
     <string name="setting_pin_lengthmismatch">Panjang PIN haruslah dalam 4 digit</string>
     <string name="setting_pin_changed">PIN berhasil dirubah</string>
-
+    <string name="aktif">Aktif</string>
+    <string name="aktif_tidak">Nonaktif</string>
+    <string name="command_ambilsms">Meminta SMS</string>
+    <string name="command_forwardsms">Meneruskan SMS</string>
+    <string name="command_contact">Meminta Kontak</string>
+    <string name="command_help">Meminta SMS</string>
+    <string name="command_record">Merekam Suara</string>
+    <string name="command_loc">Meminta lokasi</string>
+    <string name="setting_customcommandfor">Perintah kustom untuk %s</string>
+    <string name="autosaveonback">Perubahan akan disimpan secara otomatis</string>
+    <string name="setting_customcommand_changed">Perintah untuk %s telah diubah</string>
+    
+    
 </resources>
