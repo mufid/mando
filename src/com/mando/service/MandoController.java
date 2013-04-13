@@ -71,7 +71,7 @@ public class MandoController {
 
         // forward SMS:
         // <PIN> <perintah> <nomor tujuan> <SMS>
-        if (words[1].equals(commands.get(0)) && isActive.get(0)) {
+        if (words[1].equals(settings.getCommandString(0)) && settings.getCommandActive(0)) {
             if (words.length < 4)
                 return; // invalid forward
             try {
@@ -90,7 +90,7 @@ public class MandoController {
 
         // receive SMS:
         // <PIN> <perintah> <jumlah SMS diambil>
-        if (words[1].equals(commands.get(1)) && isActive.get(1)) {
+        if (words[1].equals(settings.getCommandString(1)) && settings.getCommandActive(1)) {
             if (words.length != 3)
                 return; // invalid SMS
             try {
@@ -105,7 +105,7 @@ public class MandoController {
 
         // get Contacs:
         // <PIN> <perintah> <nama kontak>
-        if (words[1].equals(commands.get(2)) && isActive.get(2)) {
+        if (words[1].equals(settings.getCommandString(2)) && settings.getCommandActive(2)) {
             if (words.length < 3)
                 return; // invalid SMS
             String name = "";
@@ -116,7 +116,7 @@ public class MandoController {
 
         // get Help:
         // <PIN> <perintah>
-        if (words[1].equals(commands.get(3)) && isActive.get(3)) {
+        if (words[1].equals(settings.getCommandString(3)) && settings.getCommandActive(3)) {
             if (words.length != 2)
                 return; // invalid SMS
             result = getHelp(commands, isActive);
@@ -124,7 +124,7 @@ public class MandoController {
 
         // get Location:
         // <PIN> <perintah>
-        if (words[1].equals(commands.get(5)) && isActive.get(5)) {
+        if (words[1].equals(settings.getCommandString(5)) && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
             getLocation();
@@ -149,23 +149,24 @@ public class MandoController {
 
     public static String getHelp(ArrayList<String> commands,
             ArrayList<Boolean> isActive) {
+        SettingsController s = new SettingsController(c);
         String msg = "help: ";
         if (isActive.get(0)) // forward sms
-            msg += "\nForward SMS:\n<PIN> " + commands.get(0)
+            msg += "\nForward SMS:\n<PIN> " + s.getCommandString(0)
                     + " <No.Tujuan> <SMS>\n";
         if (isActive.get(1)) // ambil sms
-            msg += "\nretieve SMS:\n<PIN> " + commands.get(1)
+            msg += "\nretieve SMS:\n<PIN> " + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n";
         if (isActive.get(2)) // kontak
-            msg += "\nget contact:\n<PIN> " + commands.get(2)
+            msg += "\nget contact:\n<PIN> " + s.getCommandString(2)
                     + " <Nama kontak>\n";
         if (isActive.get(3)) // help
-            msg += "\nhelp:\n<PIN> " + commands.get(3) + "\n";
+            msg += "\nhelp:\n<PIN> " + s.getCommandString(3) + "\n";
         if (isActive.get(4)) // suara
-            msg += "\nrecord sound:\n<PIN> " + commands.get(4)
+            msg += "\nrecord sound:\n<PIN> " + s.getCommandString(4)
                     + " <waktu rekam(detik)>\n";
         if (isActive.get(5)) // lokasi
-            msg += "\nget location:\n<PIN> " + commands.get(5) + "\n";
+            msg += "\nget location:\n<PIN> " + s.getCommandString(5) + "\n";
 
         return msg;
     }
