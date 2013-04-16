@@ -71,7 +71,8 @@ public class MandoController {
 
         // forward SMS:
         // <PIN> <perintah> <nomor tujuan> <SMS>
-        if (words[1].equals(settings.getCommandString(0)) && settings.getCommandActive(0)) {
+        if (words[1].equals(settings.getCommandString(0))
+                && settings.getCommandActive(0)) {
             if (words.length < 4)
                 return; // invalid forward
             try {
@@ -90,7 +91,8 @@ public class MandoController {
 
         // receive SMS:
         // <PIN> <perintah> <jumlah SMS diambil>
-        if (words[1].equals(settings.getCommandString(1)) && settings.getCommandActive(1)) {
+        if (words[1].equals(settings.getCommandString(1))
+                && settings.getCommandActive(1)) {
             if (words.length != 3)
                 return; // invalid SMS
             try {
@@ -105,7 +107,8 @@ public class MandoController {
 
         // get Contacs:
         // <PIN> <perintah> <nama kontak>
-        if (words[1].equals(settings.getCommandString(2)) && settings.getCommandActive(2)) {
+        if (words[1].equals(settings.getCommandString(2))
+                && settings.getCommandActive(2)) {
             if (words.length < 3)
                 return; // invalid SMS
             String name = "";
@@ -116,7 +119,8 @@ public class MandoController {
 
         // get Help:
         // <PIN> <perintah>
-        if (words[1].equals(settings.getCommandString(3)) && settings.getCommandActive(3)) {
+        if (words[1].equals(settings.getCommandString(3))
+                && settings.getCommandActive(3)) {
             if (words.length != 2)
                 return; // invalid SMS
             result = getHelp(commands, isActive);
@@ -124,7 +128,8 @@ public class MandoController {
 
         // get Location:
         // <PIN> <perintah>
-        if (words[1].equals(settings.getCommandString(5)) && settings.getCommandActive(5)) {
+        if (words[1].equals(settings.getCommandString(5))
+                && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
             getLocation();
@@ -269,7 +274,8 @@ public class MandoController {
                 addressName = addressNum;
             }
 
-            String body = cursor.getString(1);
+            String body = String.format("Dari %s: %s", addressName,
+                    cursor.getString(1));// cursor.getString(1);
 
             res[i] = new SMS(addressNum, body);
         }

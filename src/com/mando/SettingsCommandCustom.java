@@ -2,9 +2,8 @@ package com.mando;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnKeyListener;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,22 +23,34 @@ public class SettingsCommandCustom extends SherlockActivity {
         SettingsController s = new SettingsController(this);
 
         int commandID = i.getExtras().getInt("id");
-        EditText ed = ((EditText) findViewById(R.id.customcommand_edittext));
+        final EditText ed = ((EditText) findViewById(R.id.customcommand_edittext));
         ed.setText(s.getCommandString(commandID));
         TextView tv = (TextView) findViewById(R.id.customcommand_titlelabel);
         tv.setText(String.format(getString(R.string.setting_customcommandfor),
                 s.getCommandName(commandID)));
+        ed.addTextChangedListener(new TextWatcher() {
 
-        tv.setOnKeyListener(new OnKeyListener() {
-
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                TextView tv = (TextView) v;
-                if (commandStringValid(tv.getText().toString())) {
-                    tv.setError("");
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before,
+                    int count) {
+                if (commandStringValid(ed.getText().toString())) {
+                    ed.setError(null);
                 } else {
-                    tv.setError("Perintah hanya boleh berisi angka dan huruf");
+                    ed.setError("Perintah hanya boleh berisi angka dan huruf");
                 }
-                return false;
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                    int after) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                // TODO Auto-generated method stub
+
             }
         });
     }
