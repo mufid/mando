@@ -20,7 +20,7 @@
     <string name="command_ambilsms">Meminta SMS</string>
     <string name="command_forwardsms">Meneruskan SMS</string>
     <string name="command_contact">Meminta Kontak</string>
-    <string name="command_help">Meminta SMS</string>
+    <string name="command_help">Meminta Bantuan</string>
     <string name="command_record">Merekam Suara</string>
     <string name="command_loc">Meminta lokasi</string>
     <string name="setting_customcommandfor">Perintah kustom untuk %s</string>

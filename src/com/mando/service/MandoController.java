@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
+import android.util.Log;
 
 import com.mando.R;
 import com.mando.helper.SMS;
@@ -143,26 +144,27 @@ public class MandoController {
 
     public static String getHelp(ArrayList<String> commands,
             ArrayList<Boolean> isActive) {
+        Log.e("mando", "ganteeeng");
         SettingsController s = new SettingsController(c);
         String msg = "help: ";
-        if (isActive.get(0)) // forward sms
+        if (s.getCommandActive(0)) // forward sms
             msg += "\n" + c.getString(R.string.command_forwardsms)
                     + ":\n<PIN> " + s.getCommandString(0)
                     + " <No.Tujuan> <SMS>\n";
-        if (isActive.get(1)) // ambil sms
+        if (s.getCommandActive(1)) // ambil sms
             msg += "\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
                     + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n";
-        if (isActive.get(2)) // kontak
+        if (s.getCommandActive(2)) // kontak
             msg += "\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
                     + s.getCommandString(2) + " <Nama kontak>\n";
-        if (isActive.get(3)) // help
+        if (s.getCommandActive(3)) // help
             msg += "\n" + c.getString(R.string.command_help) + ":\n<PIN> "
                     + s.getCommandString(3) + "\n";
-        if (isActive.get(4)) // suara
+        if (s.getCommandActive(4)) // suara
             msg += "\n" + c.getString(R.string.command_record) + ":\n<PIN> "
                     + s.getCommandString(4) + " <waktu rekam(detik)>\n";
-        if (isActive.get(5)) // lokasi
+        if (s.getCommandActive(5)) // lokasi
             msg += "\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
                     + s.getCommandString(5) + "\n";
 
@@ -249,12 +251,12 @@ public class MandoController {
     }
 
     public static SMS[] getSMS(int jumlah, Context context) {
-        SMS[] res = new SMS[jumlah];
+        SMS[] res = new SMS[jumlah - 1];
         Uri smsUri = Uri.parse("content://sms/inbox");
         Cursor cursor = context.getContentResolver().query(smsUri,
                 new String[] { "address", "body" }, null, null, "date DESC");
 
-        for (int i = 0; i < jumlah && cursor.moveToNext(); i++) {
+        for (int i = 0; i < res.length && cursor.moveToNext(); i++) {
             String addressNum = cursor.getString(0);
             Uri addrNameUri = Uri.withAppendedPath(
                     PhoneLookup.CONTENT_FILTER_URI, Uri.encode(addressNum));
@@ -275,11 +277,12 @@ public class MandoController {
                     cursor.getString(1));// cursor.getString(1);
 
             if (i == 0) {
+
                 // TODO : Kalau command udah dihapus, gak perlu pake ini lagi.
                 continue;
             }
-
-            res[i] = new SMS(addressNum, body);
+            Log.e("Mando", "Kenapa kita bisa mencinta");
+            res[i - 1] = new SMS(addressNum, body);
         }
 
         return res;
