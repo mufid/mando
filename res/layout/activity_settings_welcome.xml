@@ -19,7 +19,7 @@
         android:text="@string/setting_command" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/welcome_buttonTest"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Tes SMS" />

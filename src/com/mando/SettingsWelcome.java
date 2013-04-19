@@ -72,7 +72,11 @@ public class SettingsWelcome extends SherlockActivity {
             }
         });
 
-        Button test = (Button) findViewById(R.id.button1);
+        Button test = (Button) findViewById(R.id.welcome_buttonTest);
+        // Jika debug mode, hapus saja ini
+        if (SettingsHelper.isDebug() == false) {
+            test.setVisibility(View.GONE);
+        }
         test.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
                 Context context = getApplicationContext();
