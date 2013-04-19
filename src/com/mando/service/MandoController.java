@@ -256,7 +256,7 @@ public class MandoController {
         Cursor cursor = context.getContentResolver().query(smsUri,
                 new String[] { "address", "body" }, null, null, "date DESC");
 
-        for (int i = 0; i < res.length && cursor.moveToNext(); i++) {
+        for (int i = 0; i < jumlah && cursor.moveToNext(); i++) {
             String addressNum = cursor.getString(0);
             Uri addrNameUri = Uri.withAppendedPath(
                     PhoneLookup.CONTENT_FILTER_URI, Uri.encode(addressNum));

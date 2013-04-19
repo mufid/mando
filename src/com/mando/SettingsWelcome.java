@@ -3,6 +3,7 @@ package com.mando;
 import java.util.Date;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -10,10 +11,13 @@ import android.os.IBinder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.mando.helper.SMS;
 import com.mando.helper.SettingsHelper;
 import com.mando.service.MainService.LocalBinder;
+import com.mando.service.MandoController;
 
 public class SettingsWelcome extends SherlockActivity {
 
@@ -68,6 +72,21 @@ public class SettingsWelcome extends SherlockActivity {
             }
         });
 
+        Button test = (Button) findViewById(R.id.button1);
+        test.setOnClickListener(new OnClickListener() {
+            public void onClick(View arg0) {
+                Context context = getApplicationContext();
+                SMS sms[] = MandoController.getSMS(10, context);
+
+                for (int i = 0; i < sms.length; i++) {
+                    CharSequence text = sms[i].getMessage();
+                    int duration = Toast.LENGTH_SHORT;
+
+                    Toast toast = Toast.makeText(context, text, duration);
+                    toast.show();
+                }
+            }
+        });
     }
 
     @Override
