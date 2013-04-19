@@ -5,12 +5,6 @@
     android:orientation="vertical"
     android:padding="15dp"
     tools:context=".SettingsWelcome" >
-
-    <TextView
-        android:id="@+id/welcome_welcometext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/setting_terakhir" />
     
     <Button
         android:id="@+id/welcome_buttonPinConf"
@@ -25,9 +19,9 @@
         android:text="@string/setting_command" />
 
     <Button
-        android:id="@+id/welcome_buttenTest"
-        android:layout_width="match_parent"
+        android:id="@+id/welcome_buttonTest"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/test" />
+        android:text="Tes SMS" />
 
 </LinearLayout>

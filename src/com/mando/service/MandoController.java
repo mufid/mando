@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
+import android.util.Log;
 
+import com.mando.R;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
 
@@ -45,19 +47,7 @@ public class MandoController {
 
         String result = "";
 
-        // dummy, replace it with real commands
-        commands.add("forward");
-        commands.add("ambil");
-        commands.add("kontak");
-        commands.add("tolong");
-        commands.add("suara");
-        commands.add("lokasi");
-
         c = context;
-
-        // dummy juga
-        for (int i = 0; i < 6; i++)
-            isActive.add(true);
 
         // Baca pin dari setting
         SettingsController settings = new SettingsController(context);
@@ -71,7 +61,8 @@ public class MandoController {
 
         // forward SMS:
         // <PIN> <perintah> <nomor tujuan> <SMS>
-        if (words[1].equals(settings.getCommandString(0)) && settings.getCommandActive(0)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(0))
+                && settings.getCommandActive(0)) {
             if (words.length < 4)
                 return; // invalid forward
             try {
@@ -90,7 +81,8 @@ public class MandoController {
 
         // receive SMS:
         // <PIN> <perintah> <jumlah SMS diambil>
-        if (words[1].equals(settings.getCommandString(1)) && settings.getCommandActive(1)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(1))
+                && settings.getCommandActive(1)) {
             if (words.length != 3)
                 return; // invalid SMS
             try {
@@ -105,7 +97,8 @@ public class MandoController {
 
         // get Contacs:
         // <PIN> <perintah> <nama kontak>
-        if (words[1].equals(settings.getCommandString(2)) && settings.getCommandActive(2)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(2))
+                && settings.getCommandActive(2)) {
             if (words.length < 3)
                 return; // invalid SMS
             String name = "";
@@ -116,7 +109,8 @@ public class MandoController {
 
         // get Help:
         // <PIN> <perintah>
-        if (words[1].equals(settings.getCommandString(3)) && settings.getCommandActive(3)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(3))
+                && settings.getCommandActive(3)) {
             if (words.length != 2)
                 return; // invalid SMS
             result = getHelp(commands, isActive);
@@ -124,7 +118,8 @@ public class MandoController {
 
         // get Location:
         // <PIN> <perintah>
-        if (words[1].equals(settings.getCommandString(5)) && settings.getCommandActive(5)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(5))
+                && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
             getLocation();
@@ -149,24 +144,29 @@ public class MandoController {
 
     public static String getHelp(ArrayList<String> commands,
             ArrayList<Boolean> isActive) {
+        Log.e("mando", "ganteeeng");
         SettingsController s = new SettingsController(c);
         String msg = "help: ";
-        if (isActive.get(0)) // forward sms
-            msg += "\nForward SMS:\n<PIN> " + s.getCommandString(0)
+        if (s.getCommandActive(0)) // forward sms
+            msg += "\n" + c.getString(R.string.command_forwardsms)
+                    + ":\n<PIN> " + s.getCommandString(0)
                     + " <No.Tujuan> <SMS>\n";
-        if (isActive.get(1)) // ambil sms
-            msg += "\nretieve SMS:\n<PIN> " + s.getCommandString(1)
+        if (s.getCommandActive(1)) // ambil sms
+            msg += "\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
+                    + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n";
-        if (isActive.get(2)) // kontak
-            msg += "\nget contact:\n<PIN> " + s.getCommandString(2)
-                    + " <Nama kontak>\n";
-        if (isActive.get(3)) // help
-            msg += "\nhelp:\n<PIN> " + s.getCommandString(3) + "\n";
-        if (isActive.get(4)) // suara
-            msg += "\nrecord sound:\n<PIN> " + s.getCommandString(4)
-                    + " <waktu rekam(detik)>\n";
-        if (isActive.get(5)) // lokasi
-            msg += "\nget location:\n<PIN> " + s.getCommandString(5) + "\n";
+        if (s.getCommandActive(2)) // kontak
+            msg += "\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
+                    + s.getCommandString(2) + " <Nama kontak>\n";
+        if (s.getCommandActive(3)) // help
+            msg += "\n" + c.getString(R.string.command_help) + ":\n<PIN> "
+                    + s.getCommandString(3) + "\n";
+        if (s.getCommandActive(4)) // suara
+            msg += "\n" + c.getString(R.string.command_record) + ":\n<PIN> "
+                    + s.getCommandString(4) + " <waktu rekam(detik)>\n";
+        if (s.getCommandActive(5)) // lokasi
+            msg += "\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
+                    + s.getCommandString(5) + "\n";
 
         return msg;
     }
@@ -175,7 +175,7 @@ public class MandoController {
         int j = 0;
         // pattern matching
         for (int i = 0; i < a.length() && j + 1 < b.length(); i++)
-            if (a.charAt(i) == b.charAt(j))
+            if (a.toLowerCase().charAt(i) == b.toLowerCase().charAt(j))
                 j++;
             else
                 j = 0;
@@ -223,6 +223,10 @@ public class MandoController {
             if (lastName.equals(cur.getString(nameField)))
                 continue;
 
+            if (cur.getString(numField) == null
+                    || !cur.getString(numField).matches("^[+]?[0-9 -()]+"))
+                continue;
+
             lastName = cur.getString(nameField);
 
             name.add(cur.getString(nameField));
@@ -247,7 +251,7 @@ public class MandoController {
     }
 
     public static SMS[] getSMS(int jumlah, Context context) {
-        SMS[] res = new SMS[10];
+        SMS[] res = new SMS[jumlah - 1];
         Uri smsUri = Uri.parse("content://sms/inbox");
         Cursor cursor = context.getContentResolver().query(smsUri,
                 new String[] { "address", "body" }, null, null, "date DESC");
@@ -269,9 +273,16 @@ public class MandoController {
                 addressName = addressNum;
             }
 
-            String body = cursor.getString(1);
+            String body = String.format("Dari %s: %s", addressName,
+                    cursor.getString(1));// cursor.getString(1);
 
-            res[i] = new SMS(addressNum, body);
+            if (i == 0) {
+
+                // TODO : Kalau command udah dihapus, gak perlu pake ini lagi.
+                continue;
+            }
+            Log.e("Mando", "Kenapa kita bisa mencinta");
+            res[i - 1] = new SMS(addressNum, body);
         }
 
         return res;
