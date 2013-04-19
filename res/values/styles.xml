@@ -22,7 +22,7 @@
     <style name="activebutton" parent="buttontoggle">
         <item name="android:text">@string/aktif</item>
     </style>
-    <style name="activebutton" parent="buttontoggle">
+    <style name="nonactivebutton" parent="buttontoggle">
         <item name="android:background">#33B5E5</item>
         <item name="android:text">@string/aktif_tidak</item>
     </style>

@@ -2,13 +2,9 @@
 <resources>
 
     <string name="app_name">Mando</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_settings_welcome">SettingsWelcome</string>
     <string name="setting_pin">Atur PIN</string>
     <string name="setting_command">Pengaturan Perintah</string>
-    <string name="setting_terakhir">Hai, kamu terakhir membuka setting pada %s</string>
-    <string name="setting_terakhir_tidakpernah">Halo, selamat datang di pengaturan Mando!</string>
     <string name="setting_pin_saatini">PIN Saat Ini</string>
     <string name="setting_pin_baru">PIN baru</string>
     <string name="setting_pin_barulagi">PIN baru (masukkan sekali lagi)</string>
@@ -16,7 +12,6 @@
     <string name="setting_pin_notmatch">Pasangan PIN baru tidak cocok</string>
     <string name="setting_fieldrequired">Kolom %s belum diisi</string>
     <string name="save">Simpan</string>
-    <string name="test">Tes</string>
     <string name="setting_toggle_welcome">Untuk melakukan kustomisasi perintah, tap pada nama perintah</string>
     <string name="setting_pin_lengthmismatch">Panjang PIN haruslah dalam 4 digit</string>
     <string name="setting_pin_changed">PIN berhasil dirubah</string>
@@ -25,7 +20,7 @@
     <string name="command_ambilsms">Meminta SMS</string>
     <string name="command_forwardsms">Meneruskan SMS</string>
     <string name="command_contact">Meminta Kontak</string>
-    <string name="command_help">Meminta SMS</string>
+    <string name="command_help">Meminta Bantuan</string>
     <string name="command_record">Merekam Suara</string>
     <string name="command_loc">Meminta lokasi</string>
     <string name="setting_customcommandfor">Perintah kustom untuk %s</string>

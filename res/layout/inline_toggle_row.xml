@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <TableRow xmlns:android="http://schemas.android.com/apk/res/android" >
+    <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/inline_togglerow_commandname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/menu_settings"
+            android:textSize="26sp"
              />
 
         <Button
             android:id="@+id/inline_togglerow_togglebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/command_ambilsms"
              />
 
     </TableRow>
