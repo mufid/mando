@@ -15,7 +15,7 @@
             android:id="@+id/inline_togglerow_togglebutton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/command_ambilsms"
+            android:text="@string/aktif"
              />
 
     </TableRow>

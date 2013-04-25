@@ -12,18 +12,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class SettingsCommandToggle extends SherlockActivity {
-
-    public void recheckButtonMode(Button but) {
+    
+    public void recheckButtonMode(View but) {
+        
         final SettingsController s = new SettingsController(this);
         Integer i = (Integer) but.getTag();
+        CompoundButton b = (CompoundButton) but;
         if (s.getCommandActive(i)) {
-            but.setText(R.string.aktif);
+            b.setChecked(true);
+            //but.setText(R.string.aktif);
         } else {
-            but.setText(R.string.aktif_tidak);
+            b.setChecked(false);
+            //but.setText(R.string.aktif_tidak);
         }
     }
     
@@ -34,15 +40,13 @@ public class SettingsCommandToggle extends SherlockActivity {
 		setContentView(R.layout.activity_settings_commandtoggle);
 		TableLayout tl = (TableLayout) findViewById(R.id.commandtoggle_list);
 		final SettingsController s = new SettingsController(this);
-		final Context context = getApplicationContext();
 		final LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		OnClickListener toggleCommand = new OnClickListener() {
-			@Override
-			public void onClick(View but) {
+		OnCheckedChangeListener toggleCommand = new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton but, boolean isChecked) {
 				Button b = (Button) but;
 				Integer i = (Integer) b.getTag();
 				s.setCommandActive(i, !s.getCommandActive(i));
-				recheckButtonMode(b);
+				//recheckButtonMode(b);
 			}
 		};
 		
@@ -62,16 +66,15 @@ public class SettingsCommandToggle extends SherlockActivity {
 		for (Pair<Integer, String> x : s.getCommandName()) {
 	        View row = inflater.inflate(R.layout.inline_toggle_row, null);
 	        TextView tv = ((TextView)row.findViewById(R.id.inline_togglerow_commandname));
-	        Button but = ((Button) row.findViewById(R.id.inline_togglerow_togglebutton));
+	        CompoundButton but = ((CompoundButton) row.findViewById(R.id.inline_togglerow_togglebutton));
 	        tv.setText(x.second);
 	        tv.setTag(x.first);
 	        but.setTag(x.first);
-	        but.setOnClickListener(toggleCommand);
 	        recheckButtonMode(but);
+	        but.setOnCheckedChangeListener(toggleCommand);
 	        tl.addView(row);
 	        tv.setOnClickListener(customcommand);
         }
-		
 		
 	}
 	
