@@ -247,6 +247,7 @@ public class MandoController {
     }
 
     public static String getLocation() {
+        
         return "";
     }
 
@@ -297,5 +298,10 @@ public class MandoController {
         // TODO: Lakukan rutin di sini
         
         return "Berhasil Menderingkan";
+    }
+    
+    public static String mutakhirkanTwitter(String pesan) {
+        
+        return "Status twitter berhasil dimutakhirkan";
     }
 }
