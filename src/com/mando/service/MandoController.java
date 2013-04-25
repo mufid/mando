@@ -292,4 +292,10 @@ public class MandoController {
         sendSMS(sms);
         return "";
     }
+    
+    public static String dering() {
+        // TODO: Lakukan rutin di sini
+        
+        return "Berhasil Menderingkan";
+    }
 }
