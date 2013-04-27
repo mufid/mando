@@ -49,4 +49,16 @@ public class CallbackLocation implements LocationListener {
 
     }
 
+    
+    public void onSuccess() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    
+    public void onFailure() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

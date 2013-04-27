@@ -247,6 +247,7 @@ public class MandoController {
     }
 
     public static String getLocation() {
+        
         return "";
     }
 
@@ -291,5 +292,16 @@ public class MandoController {
     public static String forwardSMS(SMS sms) {
         sendSMS(sms);
         return "";
+    }
+    
+    public static String dering() {
+        // TODO: Lakukan rutin di sini
+        
+        return "Berhasil Menderingkan";
+    }
+    
+    public static String mutakhirkanTwitter(String pesan) {
+        
+        return "Status twitter berhasil dimutakhirkan";
     }
 }
