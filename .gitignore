@@ -17,3 +17,5 @@ monkey.txt
 *~
 *.iws
 *.class
+# Secrets!
+res/values/mando_secret.xml
