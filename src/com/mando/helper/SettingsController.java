@@ -3,6 +3,7 @@ package com.mando.helper;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Pair;
 
@@ -168,5 +169,12 @@ public class SettingsController {
             retval.add(new Pair<Integer, String>(i, getCommandName(i)));
         }
         return retval;
+    }
+    
+    public boolean isSettingsValid(Activity act, int commandID) {
+        return false; // dummy
+    }
+    public boolean doInitCustomSettings(Activity act, int commandID) {
+        return false; // dummy
     }
 }
