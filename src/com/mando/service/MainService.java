@@ -31,13 +31,6 @@ public class MainService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-    	if (false) {
-    	Log.i("aku", "akuuuuuuu");
-        mIntentFilter = new IntentFilter();
-        mSMSreceiver = new MandoSMSReceiver();
-        mIntentFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
-        registerReceiver(mSMSreceiver, mIntentFilter);
-        Log.i("aku", "Nah berhasil"); }
         return mBinder;
     }
 
