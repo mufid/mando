@@ -7,7 +7,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class CallbackLocation implements Callback, LocationListener {
+public class CallbackLocation implements LocationListener {
 
     private Context c;
     private LocationManager lm;
@@ -49,13 +49,13 @@ public class CallbackLocation implements Callback, LocationListener {
 
     }
 
-    @Override
+    
     public void onSuccess() {
         // TODO Auto-generated method stub
         
     }
 
-    @Override
+    
     public void onFailure() {
         // TODO Auto-generated method stub
         

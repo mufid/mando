@@ -14,7 +14,7 @@ public class SettingsController {
     /**
      * Perintah-perintah yang muncul ke pengguna 0: TODO 1: 2:
      */
-    private int[] visibleCommands = { 0, 1, 2, 4, 5 };
+    private int[] visibleCommands = { 0, 1, 2, 4, 5, 6 };
 
     public SettingsController(Context c) {
         this.c = c;
@@ -43,7 +43,7 @@ public class SettingsController {
         if (newPin.length() == 0) {
             ht.put(R.id.pin_new, String.format(
                     c.getString(R.string.setting_fieldrequired),
-                    R.string.setting_pin_baru));
+                    c.getString(R.string.setting_pin_baru)));
         }
         // Cek apakah panjang PIN benar-benar 4
         if (newPin.length() != 4) {
@@ -54,7 +54,7 @@ public class SettingsController {
         if (newPin2.length() == 0) {
             ht.put(R.id.pin_newagain, String.format(
                     c.getString(R.string.setting_fieldrequired),
-                    R.string.setting_pin_barulagi));
+                    c.getString(R.string.setting_pin_barulagi)));
         }
         // Check if the required field filled out
         if (!newPin2.equals(newPin)) {
@@ -88,8 +88,9 @@ public class SettingsController {
         SettingsHelper.store("command-3", "tolong");
         SettingsHelper.store("command-4", "suara");
         SettingsHelper.store("command-5", "lokasi");
+        SettingsHelper.store("command-6", "twitter");
 
-        SettingsHelper.store("commandactive", "111111");
+        SettingsHelper.store("commandactive", "1111111");
     }
 
     public boolean getCommandActive(int i) {
@@ -153,6 +154,8 @@ public class SettingsController {
             return c.getString(R.string.command_record);
         case 5:
             return c.getString(R.string.command_loc);
+        case 6:
+            return c.getString(R.string.command_twitter);
         }
         return null;
     }
@@ -171,10 +174,32 @@ public class SettingsController {
         return retval;
     }
     
-    public boolean isSettingsValid(Activity act, int commandID) {
-        return false; // dummy
+    public void setTwitterUsername(String username) {
+        SettingsHelper.init(c);
+        SettingsHelper.store("command-twitter-uname", username);
     }
-    public boolean doInitCustomSettings(Activity act, int commandID) {
-        return false; // dummy
+    public void setTwitterTokenPair(String token, String tokenSecret) {
+        SettingsHelper.init(c);
+        SettingsHelper.store("command-twitter-token", token);
+        SettingsHelper.store("command-twitter-token-secret", tokenSecret);
+    }
+    public Pair<String, String> getTwitterTokenPair() {
+        SettingsHelper.init(c);
+        String token = SettingsHelper.read("command-twitter-token");
+        String tokensecret = SettingsHelper.read("command-twitter-token-secret");
+        if (token == null || token.length() == 0) return null;
+        return new Pair<String, String>(token, tokensecret);
+    }
+    public String getTwitterUsername() {
+        SettingsHelper.init(c);
+        String uname = SettingsHelper.read("command-twitter-uname");
+        if (uname == null || uname.length() == 0) return null;
+        return uname;
+    }
+    
+    public void deleteTwitterConnection() {
+        SettingsHelper.init(c);
+        SettingsHelper.store("command-twitter-uname", "");
+        SettingsHelper.store("command-twitter-token", "");
     }
 }
