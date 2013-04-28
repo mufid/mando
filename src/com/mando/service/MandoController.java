@@ -251,12 +251,12 @@ public class MandoController {
     }
 
     public static SMS[] getSMS(int jumlah, Context context) {
-        SMS[] res = new SMS[jumlah - 1];
+        SMS[] res = new SMS[jumlah];
         Uri smsUri = Uri.parse("content://sms/inbox");
         Cursor cursor = context.getContentResolver().query(smsUri,
                 new String[] { "address", "body" }, null, null, "date DESC");
 
-        for (int i = 0; i < jumlah && cursor.moveToNext(); i++) {
+        for (int i = 0; i < jumlah + 1 && cursor.moveToNext(); i++) {
             String addressNum = cursor.getString(0);
             Uri addrNameUri = Uri.withAppendedPath(
                     PhoneLookup.CONTENT_FILTER_URI, Uri.encode(addressNum));
@@ -283,8 +283,11 @@ public class MandoController {
             }
             Log.e("Mando", "Kenapa kita bisa mencinta");
             res[i - 1] = new SMS(addressNum, body);
+
+            addr.close();
         }
 
+        cursor.close();
         return res;
     }
 
