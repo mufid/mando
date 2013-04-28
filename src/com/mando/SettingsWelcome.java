@@ -79,16 +79,9 @@ public class SettingsWelcome extends SherlockActivity {
         }
         test.setOnClickListener(new OnClickListener() {
             public void onClick(View arg0) {
-                Context context = getApplicationContext();
-                SMS sms[] = MandoController.getSMS(10, context);
-
-                for (int i = 0; i < sms.length; i++) {
-                    CharSequence text = sms[i].getMessage();
-                    int duration = Toast.LENGTH_SHORT;
-
-                    Toast toast = Toast.makeText(context, text, duration);
-                    toast.show();
-                }
+                Intent i = new Intent(getApplicationContext(),
+                        SettingsTest.class);
+                startActivity(i);                
             }
         });
     }
