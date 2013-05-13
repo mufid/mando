@@ -207,6 +207,11 @@ public class MandoController {
             msg += "\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
                     + s.getCommandString(5) + "\n";
 
+        if (s.getCommandActive(6)) // twitter
+            msg += "\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
+                    + s.getCommandString(6) + "\n";
+
+        
         return msg;
     }
 
