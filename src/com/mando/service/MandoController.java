@@ -11,6 +11,7 @@ import android.telephony.SmsManager;
 import android.util.Log;
 
 import com.mando.R;
+import com.mando.helper.Callback;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
 
@@ -29,7 +30,7 @@ public class MandoController {
      */
     public static Context c;
 
-    public static void processSMS(String s, String n, Context context) {
+    public static void processSMS(String s, String phoneNum, Context context) {
         // Ini yang ada di UCRS pertama
         // index legends:
         // 0 : forward SMS
@@ -38,12 +39,10 @@ public class MandoController {
         // 3 : help
         // 4 : record sound (not now)
         // 5 : location
+        // 6 : Twitter
+        // 7 : Anti-theft
 
         // bentuk SMS valid: <PIN> <perintah> <SMS>
-
-        // data accuiring:
-        ArrayList<String> commands = new ArrayList<String>();
-        ArrayList<Boolean> isActive = new ArrayList<Boolean>();
 
         String result = "";
 
@@ -89,7 +88,7 @@ public class MandoController {
                 int count = Integer.parseInt(words[2]);
 
                 // call recieve SMS
-                receiveSMS(count, n);
+                receiveSMS(count, phoneNum);
             } catch (Exception e) {
                 return; // invalid SMS
             }
@@ -113,7 +112,7 @@ public class MandoController {
                 && settings.getCommandActive(3)) {
             if (words.length != 2)
                 return; // invalid SMS
-            result = getHelp(commands, isActive);
+            result = getHelp();
         }
 
         // get Location:
@@ -124,12 +123,53 @@ public class MandoController {
                 return; // invalid SMS
             getLocation();
         }
+        
+        // get twitter:
+        // <PIN> <perintah> <tweetnya?
+        if (words[1].equalsIgnoreCase(settings.getCommandString(5))
+                && settings.getCommandActive(5)) {
+            if (words.length < 4)
+                return; // invalid perintah twitter
+            try {
+                String num = words[2];
+                String msg = "";
+                for (int i = 3; i < words.length; i++)
+                    msg += words[i] + " ";
 
-        SMS sms = new SMS(n, result);
+                // call forward SMS
+                tweet(msg, new Callback(c, phoneNum) {
+                    @Override
+                    public void onSuccess() {
+                        send("Tweet berhasil dikirim");
+                    }
+                    @Override
+                    public void onFailure() {
+                        send("Tweet gagal dikirim");
+                    }
+                });
+            } catch (Exception e) {
+                return; // invalid SMS
+            }
+        }
+        
+        // Hapus SMS terakhir atau SMS perintah
+        deleteLastSMS();
+
+        SMS sms = new SMS(phoneNum, result);
 
         if (result.length() > 0)
             sendSMS(sms);
 
+    }
+
+    private static void tweet(String msg, Callback cb) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    private static void deleteLastSMS() {
+        // TODO Auto-generated method stub
+        
     }
 
     public static String receiveSMS(int x, String n) {
@@ -142,8 +182,7 @@ public class MandoController {
         return "";
     }
 
-    public static String getHelp(ArrayList<String> commands,
-            ArrayList<Boolean> isActive) {
+    public static String getHelp() {
         Log.e("mando", "ganteeeng");
         SettingsController s = new SettingsController(c);
         String msg = "help: ";
@@ -282,7 +321,6 @@ public class MandoController {
                 // TODO : Kalau command udah dihapus, gak perlu pake ini lagi.
                 continue;
             }
-            Log.e("Mando", "Kenapa kita bisa mencinta");
             res[i - 1] = new SMS(addressNum, body);
         }
 
