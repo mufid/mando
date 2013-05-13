@@ -2,13 +2,22 @@ package com.mando.service;
 
 import java.util.ArrayList;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.util.Pair;
 
 import com.mando.R;
 import com.mando.helper.Callback;
@@ -162,9 +171,42 @@ public class MandoController {
 
     }
 
-    private static void tweet(String msg, Callback cb) {
-        // TODO Auto-generated method stub
-        
+    private static void tweet(String msg, final Callback cb) {
+        // 0: Twitter token
+        // 1: Twitter message
+        AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(String... params) {
+                try {
+                    ConfigurationBuilder confbuilder = new ConfigurationBuilder();
+                    Configuration conf = confbuilder
+                        .setOAuthConsumerKey(c.getString(R.string.twitter_consumer_key))
+                        .setOAuthConsumerSecret(c.getString(R.string.twitter_consumer_secret))
+                        .build();
+                    Twitter mTwitter = new TwitterFactory(conf).getInstance();
+
+                    String accessToken = params[0];
+                    String accessTokenSecret = params[1];
+                    if (accessToken == null || accessTokenSecret == null) {
+                        cb.onFailure();
+                        return null;
+                    }
+                    mTwitter.setOAuthAccessToken(new AccessToken(accessToken, accessTokenSecret));
+
+                    mTwitter.updateStatus(params[3]);
+                    
+                    cb.onSuccess();
+                } catch (TwitterException e) {
+                    cb.onFailure();
+                }
+                return null;
+            }
+            
+        };
+        SettingsController s = new SettingsController(c);
+        Pair<String, String> tokenpair = s.getTwitterTokenPair();
+        x.execute(tokenpair.first, tokenpair.second, msg);
     }
 
     private static void deleteLastSMS() {
