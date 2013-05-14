@@ -34,20 +34,17 @@ Latest result:
 
 Ubah baris, tambah menjadi [OK] jika sudah selesai
 
-- Tes persistent storage [OK]
-- Sudah bisa berjalan sebagai service
-- Sudah bisa menghandle sms yang masuk
-- Sudah bisa mematikan notifikasi sms yang masuk
-- Sudah bisa menyimpan PIN
-- Sudah bisa melakukan konfigurasi kustom
-- Sudah bisa mematikan/menyalakan perintah
-- Parser selesai
-- Sudah bisa meminta inbox
-- Sudah bisa meminta kontak
-- Sudah bisa meminta lokasi
-- Perintah ambigu tertangani
-- Sudah bisa konek ke server
-- Sudah bisa menyimpan suara ke file
-- Sudah bisa mengirim file ke server
+- [x] Semua iterasi 1
+- [ ] Abis install / pertama kali run; langsung ada panduan ganti PIN
+- [ ] Implementasi callback
+- [ ] Implementasi lokasi 
+- [ ] Implementasi location name
+- [ ] Implementasi remote wipe
+- [ ] Implementasi hapus sms yang udah dikirim
+- [ ] Implementasi hapus semua sms, yang ada di kartu SD, dan backup
+- [ ] Konek ke server SMTP
+- [ ] Rekam suara, masukin ke file
+- [ ] Kirim melalui sistem SMTP
+- [ ] Konfigurasi server SMTP
 
 TAMBAH WBS sesuai kebutuhan
