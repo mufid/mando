@@ -165,40 +165,26 @@ public class MandoController {
                     // TODO Auto-generated method stub
                     
                 }
-
-                @Override
-                public void onSuccess() {
-                    // TODO Auto-generated method stub
-                    
-                }
                 
             });
         }
 
-        // get Location:
-        // <PIN> <perintah>
-        if (words[1].equalsIgnoreCase(settings.getCommandString(6))
-                && settings.getCommandActive(6)) {
-            if (words.length != 2)
-                return; // invalid SMS
-            recordSound();
-        }
         // get twitter:
         // <PIN> <perintah> <tweetnya?
         if (words[1].equalsIgnoreCase(settings.getCommandString(6))
                 && settings.getCommandActive(6)) {
-            if (words.length < 4)
+            if (words.length < 3)
                 return; // invalid perintah twitter
             try {
                 String num = words[2];
                 String msg = "";
                 for (int i = 3; i < words.length; i++)
                     msg += words[i] + " ";
-
+                Toast.makeText(c, "Masuk ke twitter", Toast.LENGTH_LONG);
                 // call forward SMS
                 tweet(msg, new Callback(c, phoneNum) {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(String msg) {
                         send("Tweet berhasil dikirim");
                     }
 
@@ -233,6 +219,7 @@ public class MandoController {
 
             @Override
             protected Void doInBackground(String... params) {
+                Log.e("mando", "Oke, jalan kok");
                 try {
                     ConfigurationBuilder confbuilder = new ConfigurationBuilder();
                     Configuration conf = confbuilder
@@ -252,9 +239,11 @@ public class MandoController {
                     mTwitter.setOAuthAccessToken(new AccessToken(accessToken,
                             accessTokenSecret));
 
-                    mTwitter.updateStatus(params[3]);
-
-                    cb.onSuccess();
+                    mTwitter.updateStatus(params[2]);
+                    Log.e("mando", "access token: " + accessToken);
+                    Log.e("mando", "access accessTokenSecret: " + accessTokenSecret);
+                    Log.e("mando", "msg: " + params[2]);
+                    cb.onSuccess(null);
                 } catch (TwitterException e) {
                     cb.onFailure();
                 }
@@ -262,9 +251,14 @@ public class MandoController {
             }
 
         };
+        Log.e("mando", "Wait..");
         SettingsController s = new SettingsController(c);
         Pair<String, String> tokenpair = s.getTwitterTokenPair();
-        x.execute(tokenpair.first, tokenpair.second, msg);
+        if (s.getTwitterUsername().length() == 0) {
+            cb.onFailure();
+        } else {
+            x.execute(tokenpair.first, tokenpair.second, msg);
+        }
     }
 
     private static final String LOG_TAG = "AudioRecordTest";
@@ -364,12 +358,15 @@ public class MandoController {
             gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms)
                     + ":\n<PIN> " + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n");
+        
         if (s.getCommandActive(2)) // kontak
             gm.addGradualMessage("\n" + c.getString(R.string.command_contact)
                     + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n");
+        
         if (s.getCommandActive(3)) // help
             gm.addGradualMessage("\n" + c.getString(R.string.command_help)
                     + ":\n<PIN> " + s.getCommandString(3) + "\n");
+        
         if (s.getCommandActive(4)) // suara
             gm.addGradualMessage("\n" + c.getString(R.string.command_record)
                     + ":\n<PIN> " + s.getCommandString(4)
