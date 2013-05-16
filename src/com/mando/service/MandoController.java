@@ -122,18 +122,18 @@ public class MandoController {
             result = getContacts(name);
         }
 
-        // get Help:
+        // Do rekam suara
         // <PIN> <perintah>
-        if (words[1].equalsIgnoreCase(settings.getCommandString(3))
-                && settings.getCommandActive(3)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(4))
+                && settings.getCommandActive(4)) {
             if (words.length != 2)
                 return; // invalid SMS
-            result = getHelp(phoneNum);
+            // do rekan suara here
         }
 
         // get Location:
         // <PIN> <perintah>
-        if (words[1].equalsIgnoreCase(settings.getCommandString(4))
+        if (words[1].equalsIgnoreCase(settings.getCommandString(5))
                 && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
@@ -176,8 +176,8 @@ public class MandoController {
         }
         // get twitter:
         // <PIN> <perintah> <tweetnya?
-        if (words[1].equalsIgnoreCase(settings.getCommandString(5))
-                && settings.getCommandActive(5)) {
+        if (words[1].equalsIgnoreCase(settings.getCommandString(6))
+                && settings.getCommandActive(6)) {
             if (words.length < 4)
                 return; // invalid perintah twitter
             try {
