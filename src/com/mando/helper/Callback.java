@@ -26,6 +26,6 @@ public abstract class Callback {
         smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null,
                 null);
     }
-	public abstract void onSuccess();
+	public abstract void onSuccess(String successMessage);
 	public abstract void onFailure();
 }
