@@ -220,6 +220,8 @@ public class MandoController {
 
     private static void deleteLastSMS() {
         // TODO Auto-generated method stub
+        Toast.makeText(c, "mulai hapus", 1).show();
+
         try {
             // mLogger.logInfo("Deleting SMS from inbox");
             Uri uriSms = Uri.parse("content://sms/inbox");
@@ -237,11 +239,16 @@ public class MandoController {
 
                 c.getContentResolver().delete(Uri.parse("content://sms/" + id),
                         null, null);
+                Toast.makeText(c, "Hapus SMS id " + id, 1).show();
 
             }
         } catch (Exception e) {
             // mLogger.logError("Could not delete SMS from inbox: " +
             // e.getMessage());
+            Toast.makeText(c,
+                    "Could not delete SMS from inbox: " + e.getMessage(), 1)
+                    .show();
+
         }
     }
 
