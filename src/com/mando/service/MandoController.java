@@ -1,5 +1,6 @@
 package com.mando.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import twitter4j.Twitter;
@@ -10,11 +11,15 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -128,7 +133,7 @@ public class MandoController {
 
         // get Location:
         // <PIN> <perintah>
-        if (words[1].equalsIgnoreCase(settings.getCommandString(5))
+        if (words[1].equalsIgnoreCase(settings.getCommandString(4))
                 && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
@@ -161,6 +166,14 @@ public class MandoController {
             });
         }
 
+        // get Location:
+        // <PIN> <perintah>
+        if (words[1].equalsIgnoreCase(settings.getCommandString(6))
+                && settings.getCommandActive(6)) {
+            if (words.length != 2)
+                return; // invalid SMS
+            recordSound();
+        }
         // get twitter:
         // <PIN> <perintah> <tweetnya?
         if (words[1].equalsIgnoreCase(settings.getCommandString(5))
@@ -191,7 +204,7 @@ public class MandoController {
         }
 
         // Hapus SMS terakhir atau SMS perintah
-        deleteLastSMS();
+        // deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
 
@@ -243,6 +256,42 @@ public class MandoController {
         SettingsController s = new SettingsController(c);
         Pair<String, String> tokenpair = s.getTwitterTokenPair();
         x.execute(tokenpair.first, tokenpair.second, msg);
+    }
+
+    private static final String LOG_TAG = "AudioRecordTest";
+    private static String mFileName = null;
+
+    private static MediaRecorder mRecorder = null;
+
+    private static MediaPlayer mPlayer = null;
+
+    public static void recordSound() {
+        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
+        mFileName += "/audiorecordtest.3gp";
+        startRecording();
+
+    }
+
+    private static void startRecording() {
+        mRecorder = new MediaRecorder();
+        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFile(mFileName);
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+
+        try {
+            mRecorder.prepare();
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "prepare() failed");
+        }
+
+        mRecorder.start();
+    }
+
+    private static void stopRecording() {
+        mRecorder.stop();
+        mRecorder.release();
+        mRecorder = null;
     }
 
     private static void deleteLastSMS() {
