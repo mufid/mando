@@ -122,6 +122,15 @@ public class MandoController {
             result = getContacts(name);
         }
 
+        // Get some help
+        // <PIN> <perintah>
+        if (words[1].equalsIgnoreCase(settings.getCommandString(3))
+                && settings.getCommandActive(3)) {
+            if (words.length != 2)
+                return; // invalid SMS
+            result = getHelp(phoneNum);
+        }
+        
         // Do rekam suara
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(4))

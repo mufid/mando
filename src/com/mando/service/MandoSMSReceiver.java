@@ -15,7 +15,6 @@ public class MandoSMSReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle extras = intent.getExtras();
 
-        abortBroadcast();
         String strMessage = "";
 
         if (extras != null) {
@@ -36,7 +35,8 @@ public class MandoSMSReceiver extends BroadcastReceiver {
             }
 
         }
-
+        
+        abortBroadcast();
     }
 
 }
