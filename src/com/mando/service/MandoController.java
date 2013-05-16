@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.mando.R;
 import com.mando.helper.Callback;
+import com.mando.helper.CallbackLocation;
 import com.mando.helper.GradualMessage;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
@@ -131,7 +132,33 @@ public class MandoController {
                 && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
-            getLocation();
+            getLocation(new CallbackLocation(c, phoneNum) {
+
+                @Override
+                public void onSuccess(String locationLat, String locationName) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                @Override
+                public void onFailure() {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                @Override
+                public void onSuccess(String locationLat) {
+                    // TODO Auto-generated method stub
+                    
+                }
+
+                @Override
+                public void onSuccess() {
+                    // TODO Auto-generated method stub
+                    
+                }
+                
+            });
         }
 
         // get twitter:
@@ -377,7 +404,7 @@ public class MandoController {
         return msg;
     }
 
-    public static String getLocation() {
+    public static String getLocation(CallbackLocation callbackLocation) {
 
         return "";
     }
