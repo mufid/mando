@@ -3,7 +3,6 @@ package com.mando.helper;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -12,8 +11,6 @@ import org.json.JSONObject;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.mando.R;
 
 public class LocationHelper {
     public static void getLocationName(String lat, String lng, final Callback cb) {
@@ -39,7 +36,6 @@ public class LocationHelper {
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
 
-                    OutputStream os = connection.getOutputStream(); 
                     InputStream is = connection.getInputStream();
                     BufferedReader rd = new BufferedReader(new InputStreamReader(is));
                     String line;
@@ -56,7 +52,7 @@ public class LocationHelper {
                     
                     JSONObject json = new JSONObject(response.toString());
                     
-                    if (json.getString("status").equals("ZERO_RESULTS"))
+                    if (!json.getString("status").equals("OK"))
                         cb.onFailure();
                     else {
                         String hasil = json.getJSONArray("results").getJSONObject(0).getString("formatted_address");
