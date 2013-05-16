@@ -8,7 +8,6 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -132,7 +131,7 @@ public class MandoController {
                 return; // invalid SMS
             getLocation();
         }
-        
+
         // get twitter:
         // <PIN> <perintah> <tweetnya?
         if (words[1].equalsIgnoreCase(settings.getCommandString(5))
@@ -151,6 +150,7 @@ public class MandoController {
                     public void onSuccess() {
                         send("Tweet berhasil dikirim");
                     }
+
                     @Override
                     public void onFailure() {
                         send("Tweet gagal dikirim");
@@ -160,7 +160,7 @@ public class MandoController {
                 return; // invalid SMS
             }
         }
-        
+
         // Hapus SMS terakhir atau SMS perintah
         deleteLastSMS();
 
@@ -181,9 +181,11 @@ public class MandoController {
                 try {
                     ConfigurationBuilder confbuilder = new ConfigurationBuilder();
                     Configuration conf = confbuilder
-                        .setOAuthConsumerKey(c.getString(R.string.twitter_consumer_key))
-                        .setOAuthConsumerSecret(c.getString(R.string.twitter_consumer_secret))
-                        .build();
+                            .setOAuthConsumerKey(
+                                    c.getString(R.string.twitter_consumer_key))
+                            .setOAuthConsumerSecret(
+                                    c.getString(R.string.twitter_consumer_secret))
+                            .build();
                     Twitter mTwitter = new TwitterFactory(conf).getInstance();
 
                     String accessToken = params[0];
@@ -192,17 +194,18 @@ public class MandoController {
                         cb.onFailure();
                         return null;
                     }
-                    mTwitter.setOAuthAccessToken(new AccessToken(accessToken, accessTokenSecret));
+                    mTwitter.setOAuthAccessToken(new AccessToken(accessToken,
+                            accessTokenSecret));
 
                     mTwitter.updateStatus(params[3]);
-                    
+
                     cb.onSuccess();
                 } catch (TwitterException e) {
                     cb.onFailure();
                 }
                 return null;
             }
-            
+
         };
         SettingsController s = new SettingsController(c);
         Pair<String, String> tokenpair = s.getTwitterTokenPair();
@@ -211,7 +214,32 @@ public class MandoController {
 
     private static void deleteLastSMS() {
         // TODO Auto-generated method stub
-        
+        try {
+            // mLogger.logInfo("Deleting SMS from inbox");
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            Cursor cur = c.getContentResolver().query(
+                    uriSms,
+                    new String[] { "_id", "thread_id", "address", "person",
+                            "date", "body" }, null, null, null);
+
+            if (cur != null && cur.moveToFirst()) {
+                do {
+                    long id = cur.getLong(0);
+                    long threadId = cur.getLong(1);
+                    String address = cur.getString(2);
+                    String body = cur.getString(5);
+
+                    if (address.equals(0)) {
+                        // mLogger.logInfo("Deleting SMS with id: " + threadId);
+                        c.getContentResolver().delete(
+                                Uri.parse("content://sms/" + id), null, null);
+                    }
+                } while (cur.moveToNext());
+            }
+        } catch (Exception e) {
+            // mLogger.logError("Could not delete SMS from inbox: " +
+            // e.getMessage());
+        }
     }
 
     public static String receiveSMS(int x, String n) {
@@ -253,7 +281,6 @@ public class MandoController {
             msg += "\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
                     + s.getCommandString(6) + "\n";
 
-        
         return msg;
     }
 
@@ -333,7 +360,7 @@ public class MandoController {
     }
 
     public static String getLocation() {
-        
+
         return "";
     }
 
@@ -381,15 +408,15 @@ public class MandoController {
         sendSMS(sms);
         return "";
     }
-    
+
     public static String dering() {
         // TODO: Lakukan rutin di sini
-        
+
         return "Berhasil Menderingkan";
     }
-    
+
     public static String mutakhirkanTwitter(String pesan) {
-        
+
         return "Status twitter berhasil dimutakhirkan";
     }
 }
