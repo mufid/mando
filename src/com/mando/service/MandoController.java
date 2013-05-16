@@ -15,7 +15,6 @@ import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -168,13 +167,13 @@ public class MandoController {
         deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
-        
+
         if (result.length() > 0) {
             if (SettingsHelper.isDebug())
-                Toast.makeText(c, "Will be sent: " + result, Toast.LENGTH_LONG).show();
+                Toast.makeText(c, "Will be sent: " + result, Toast.LENGTH_LONG)
+                        .show();
             sendSMS(sms);
         }
-        
 
     }
 
@@ -230,18 +229,15 @@ public class MandoController {
                             "date", "body" }, null, null, null);
 
             if (cur != null && cur.moveToFirst()) {
-                do {
-                    long id = cur.getLong(0);
-                    long threadId = cur.getLong(1);
-                    String address = cur.getString(2);
-                    String body = cur.getString(5);
+                long id = cur.getLong(0);
+                long threadId = cur.getLong(1);
+                String address = cur.getString(2);
+                String body = cur.getString(5);
+                // mLogger.logInfo("Deleting SMS with id: " + threadId);
 
-                    if (address.equals(0)) {
-                        // mLogger.logInfo("Deleting SMS with id: " + threadId);
-                        c.getContentResolver().delete(
-                                Uri.parse("content://sms/" + id), null, null);
-                    }
-                } while (cur.moveToNext());
+                c.getContentResolver().delete(Uri.parse("content://sms/" + id),
+                        null, null);
+
             }
         } catch (Exception e) {
             // mLogger.logError("Could not delete SMS from inbox: " +
@@ -265,32 +261,33 @@ public class MandoController {
         GradualMessage gm = new GradualMessage(phoneNumber);
         gm.addGradualMessage("help: ");
         if (s.getCommandActive(0)) // forward sms
-            gm.addGradualMessage("\n" + c.getString(R.string.command_forwardsms)
-                    + ":\n<PIN> " + s.getCommandString(0)
-                    + " <No.Tujuan> <SMS>\n");
+            gm.addGradualMessage("\n"
+                    + c.getString(R.string.command_forwardsms) + ":\n<PIN> "
+                    + s.getCommandString(0) + " <No.Tujuan> <SMS>\n");
         if (s.getCommandActive(1)) // ambil sms
-            gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
-                    + s.getCommandString(1)
+            gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms)
+                    + ":\n<PIN> " + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n");
         if (s.getCommandActive(2)) // kontak
-            gm.addGradualMessage("\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
-                    + s.getCommandString(2) + " <Nama kontak>\n");
+            gm.addGradualMessage("\n" + c.getString(R.string.command_contact)
+                    + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n");
         if (s.getCommandActive(3)) // help
-            gm.addGradualMessage("\n" + c.getString(R.string.command_help) + ":\n<PIN> "
-                    + s.getCommandString(3) + "\n");
+            gm.addGradualMessage("\n" + c.getString(R.string.command_help)
+                    + ":\n<PIN> " + s.getCommandString(3) + "\n");
         if (s.getCommandActive(4)) // suara
-            gm.addGradualMessage("\n" + c.getString(R.string.command_record) + ":\n<PIN> "
-                    + s.getCommandString(4) + " <waktu rekam(detik)>\n");
+            gm.addGradualMessage("\n" + c.getString(R.string.command_record)
+                    + ":\n<PIN> " + s.getCommandString(4)
+                    + " <waktu rekam(detik)>\n");
         if (s.getCommandActive(5)) // lokasi
-            gm.addGradualMessage("\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
-                    + s.getCommandString(5) + "\n");
+            gm.addGradualMessage("\n" + c.getString(R.string.command_loc)
+                    + ":\n<PIN> " + s.getCommandString(5) + "\n");
 
         if (s.getCommandActive(6)) // twitter
-            gm.addGradualMessage("\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
-                    + s.getCommandString(6) + "\n");
+            gm.addGradualMessage("\n" + c.getString(R.string.command_twitter)
+                    + ":\n<PIN> " + s.getCommandString(6) + "\n");
 
         gm.flush();
-        
+
         return "";
     }
 

@@ -26,7 +26,6 @@ public class MandoSMSReceiver extends BroadcastReceiver {
 
                 String strMsgBody = smsmsg.getMessageBody().toString();
                 String strMsgSrc = smsmsg.getOriginatingAddress();
-
                 strMessage += "SMS from " + strMsgSrc + " : " + strMsgBody;
 
                 Log.i("mando", strMessage);
