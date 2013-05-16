@@ -18,11 +18,14 @@ import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.mando.R;
 import com.mando.helper.Callback;
+import com.mando.helper.GradualMessage;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
+import com.mando.helper.SettingsHelper;
 
 /**
  * Kerjain yang parser SMS
@@ -121,7 +124,7 @@ public class MandoController {
                 && settings.getCommandActive(3)) {
             if (words.length != 2)
                 return; // invalid SMS
-            result = getHelp();
+            result = getHelp(phoneNum);
         }
 
         // get Location:
@@ -165,9 +168,13 @@ public class MandoController {
         deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
-
-        if (result.length() > 0)
+        
+        if (result.length() > 0) {
+            if (SettingsHelper.isDebug())
+                Toast.makeText(c, "Will be sent: " + result, Toast.LENGTH_LONG).show();
             sendSMS(sms);
+        }
+        
 
     }
 
@@ -224,37 +231,40 @@ public class MandoController {
         return "";
     }
 
-    public static String getHelp() {
-        Log.e("mando", "ganteeeng");
+    public static String getHelp(String phoneNumber) {
         SettingsController s = new SettingsController(c);
-        String msg = "help: ";
+        // Karena terlalu panjang, gunakan gradual message
+        GradualMessage gm = new GradualMessage(phoneNumber);
+        gm.addGradualMessage("help: ");
         if (s.getCommandActive(0)) // forward sms
-            msg += "\n" + c.getString(R.string.command_forwardsms)
+            gm.addGradualMessage("\n" + c.getString(R.string.command_forwardsms)
                     + ":\n<PIN> " + s.getCommandString(0)
-                    + " <No.Tujuan> <SMS>\n";
+                    + " <No.Tujuan> <SMS>\n");
         if (s.getCommandActive(1)) // ambil sms
-            msg += "\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
+            gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
                     + s.getCommandString(1)
-                    + " <Jumlah SMS yang akan diambil>\n";
+                    + " <Jumlah SMS yang akan diambil>\n");
         if (s.getCommandActive(2)) // kontak
-            msg += "\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
-                    + s.getCommandString(2) + " <Nama kontak>\n";
+            gm.addGradualMessage("\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
+                    + s.getCommandString(2) + " <Nama kontak>\n");
         if (s.getCommandActive(3)) // help
-            msg += "\n" + c.getString(R.string.command_help) + ":\n<PIN> "
-                    + s.getCommandString(3) + "\n";
+            gm.addGradualMessage("\n" + c.getString(R.string.command_help) + ":\n<PIN> "
+                    + s.getCommandString(3) + "\n");
         if (s.getCommandActive(4)) // suara
-            msg += "\n" + c.getString(R.string.command_record) + ":\n<PIN> "
-                    + s.getCommandString(4) + " <waktu rekam(detik)>\n";
+            gm.addGradualMessage("\n" + c.getString(R.string.command_record) + ":\n<PIN> "
+                    + s.getCommandString(4) + " <waktu rekam(detik)>\n");
         if (s.getCommandActive(5)) // lokasi
-            msg += "\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
-                    + s.getCommandString(5) + "\n";
+            gm.addGradualMessage("\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
+                    + s.getCommandString(5) + "\n");
 
         if (s.getCommandActive(6)) // twitter
-            msg += "\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
-                    + s.getCommandString(6) + "\n";
+            gm.addGradualMessage("\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
+                    + s.getCommandString(6) + "\n");
 
         
-        return msg;
+        gm.flush();
+        
+        return "";
     }
 
     private static boolean match(String a, String b) {

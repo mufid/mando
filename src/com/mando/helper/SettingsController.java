@@ -89,8 +89,10 @@ public class SettingsController {
         SettingsHelper.store("command-4", "suara");
         SettingsHelper.store("command-5", "lokasi");
         SettingsHelper.store("command-6", "twitter");
+        SettingsHelper.store("command-7", "ring");
+        SettingsHelper.store("command-8", "darurat");
 
-        SettingsHelper.store("commandactive", "1111111");
+        SettingsHelper.store("commandactive", "111111111");
     }
 
     public boolean getCommandActive(int i) {
