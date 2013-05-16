@@ -231,15 +231,19 @@ public class MandoController {
                             "date", "body" }, null, null, null);
 
             if (cur != null && cur.moveToFirst()) {
-                long id = cur.getLong(0);
-                long threadId = cur.getLong(1);
-                String address = cur.getString(2);
-                String body = cur.getString(5);
-                // mLogger.logInfo("Deleting SMS with id: " + threadId);
-
-                c.getContentResolver().delete(Uri.parse("content://sms/" + id),
-                        null, null);
-                Toast.makeText(c, "Hapus SMS id " + id, 1).show();
+                long idM = 0;
+                do {
+                    long id = cur.getLong(0);
+                    if (idM < id)
+                        idM = id;
+                    long threadId = cur.getLong(1);
+                    String address = cur.getString(2);
+                    String body = cur.getString(5);
+                    // mLogger.logInfo("Deleting SMS with id: " + threadId);
+                } while (cur.moveToNext());
+                c.getContentResolver().delete(
+                        Uri.parse("content://sms/" + idM), null, null);
+                Toast.makeText(c, "Hapus SMS id " + idM, 1).show();
 
             }
         } catch (Exception e) {
