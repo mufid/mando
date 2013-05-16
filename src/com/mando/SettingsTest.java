@@ -32,7 +32,7 @@ public class SettingsTest extends SherlockActivity {
         // Setup lokasi.
         final LocationManager locationManager = (LocationManager) this
                 .getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new CallbackLocation(this, locationManager);
+        //locationListener = new CallbackLocation(this, locationManager);
 
         // End setup.
         lv.setAdapter(new ArrayAdapter<String>(this,
