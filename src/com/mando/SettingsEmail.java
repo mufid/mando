@@ -1,8 +1,12 @@
 package com.mando;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -10,7 +14,7 @@ import com.mando.helper.SettingsController;
 import com.mando.mailer.EmailServerType;
 import com.mando.mailer.EmailSettings;
 
-public class SettingsEmail extends SherlockActivity {
+public class SettingsEmail extends SherlockActivity implements OnNavigationListener {
     
     enum View {
         Gmail, CustomSMTP
@@ -61,5 +65,20 @@ public class SettingsEmail extends SherlockActivity {
         EmailSettings m = x.getEmailSettings();
         setTextOf(R.id.username, m.username);
         setTextOf(R.id.password, m.password);
+
+        Context context = getSupportActionBar().getThemedContext();
+        ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.email_mechanism, R.layout.sherlock_spinner_item);
+        list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+
+        getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        getSupportActionBar().setListNavigationCallbacks(list, this);
     }
+
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+    
+    
 }

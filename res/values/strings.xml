@@ -34,4 +34,9 @@
     <string name="password">Kata sandi</string>
     <string name="email_settings">Pengaturan Surel</string>
     <string name="email_notset">Server surel belum diatur. Untuk dapat menggunakkan perintah ini, Anda harus mengatur server surel terlebih dahulu.</string>
+    <string name="serveraddr">Alamat server</string>
+    <string name="port">Port</string>
+    <string name="use_ssl">Gunakan SSL</string>
+    <string name="security">Mekanisme Keamanan</string>
+    <string name="security_mechanisme">Mekanisme Keamanan</string>
 </resources>

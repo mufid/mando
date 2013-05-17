@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="email_security">
+        <item>Tidak ada</item>
+        <item>TLS</item>
+        <item>SSL</item>
+    </string-array>
+    <string-array name="email_mechanism">
+        <item>GMail</item>
+        <item>SMTP Lain</item>
+    </string-array>
+</resources>
