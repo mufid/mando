@@ -5,5 +5,6 @@
     	<item>Baca SMS</item>
         <item>Ambil Kontak</item>
         <item>Tes nama lokasi</item>
+        <item>Uji Email, mengirim /sdcard/tes.3gp</item>
     </string-array>
 </resources>
