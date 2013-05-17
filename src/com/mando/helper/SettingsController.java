@@ -8,6 +8,8 @@ import android.content.Context;
 import android.util.Pair;
 
 import com.mando.R;
+import com.mando.mailer.EmailServerType;
+import com.mando.mailer.EmailSettings;
 
 public class SettingsController {
     private Context c;
@@ -203,5 +205,33 @@ public class SettingsController {
         SettingsHelper.init(c);
         SettingsHelper.store("command-twitter-uname", "");
         SettingsHelper.store("command-twitter-token", "");
+    }
+    
+    public EmailSettings getEmailSettings() {
+        SettingsHelper.init(c);
+        EmailSettings x = new EmailSettings();
+        x.username = emptyStringOrNull(SettingsHelper.read("email-username"));
+        x.password = emptyStringOrNull(SettingsHelper.read("email-password"));
+        EmailServerType serverType = null;
+        String retrievedServerType = SettingsHelper.read("email-servertype");
+        if (retrievedServerType == null) {
+            serverType = EmailServerType.GMail;
+        } else {
+            serverType = EmailServerType.valueOf(retrievedServerType);
+        }
+        x.server = serverType;
+        return x;
+    }
+    
+    
+    private String emptyStringOrNull(String read) {
+        return read == null ? "" : read;
+    }
+
+    public void saveEmailSettings(EmailSettings em) {
+        SettingsHelper.init(c);
+        SettingsHelper.store("email-username", em.username);
+        SettingsHelper.store("email-password", em.password);
+        SettingsHelper.store("email-servertype", em.server.toString());
     }
 }

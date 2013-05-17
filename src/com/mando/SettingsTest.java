@@ -1,10 +1,21 @@
 package com.mando;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -16,7 +27,10 @@ import com.mando.helper.Callback;
 import com.mando.helper.CallbackLocation;
 import com.mando.helper.LocationHelper;
 import com.mando.helper.SMS;
+import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
+import com.mando.mailer.EmailSettings;
+import com.mando.mailer.GMailSender;
 import com.mando.service.MandoController;
 
 // Implement LocationListener, biar bisa update lokasi.
@@ -93,7 +107,34 @@ public class SettingsTest extends SherlockActivity {
                         @Override
                         public void onFailure() { }
                     });
+                } else if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[4])) {
+                    AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
+                        @SuppressLint("SdCardPath")
+                        @Override
+                        protected Void doInBackground(String... params) {
+                            String username = params[0];
+                            String password = params[1];
+                            Log.i("mando", "at inline, usr: " + username + " pwd: " + password);
+                            try {   
+                                GMailSender sender = new GMailSender(username, password);
+                                sender.sendMail("This is Subject",   
+                                        "This is Body",   
+                                        username,   
+                                        username,
+                                        "/sdcard/tes.3gp");   
+                            } catch (Exception e) {   
+                                Log.e("SendMail", e.getMessage(), e);   
+                            }
+                            
+                            return null;
+                        }
+
+                    };
+                    EmailSettings xy = new SettingsController(getApplicationContext()).getEmailSettings();
+                    Log.i("mando", "usr: " + xy.username + " pwd: " + xy.password);
+                    x.execute(xy.username, xy.password);
                 }
             }
 

@@ -2,12 +2,22 @@ package com.mando.mailer;
 
 import javax.activation.DataHandler;   
 import javax.activation.DataSource;   
+import javax.activation.FileDataSource;
+import javax.mail.AuthenticationFailedException;
+import javax.mail.BodyPart;
 import javax.mail.Message;   
 import javax.mail.PasswordAuthentication;   
 import javax.mail.Session;   
 import javax.mail.Transport;   
 import javax.mail.internet.InternetAddress;   
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;   
+import javax.mail.internet.MimeMultipart;
+
+import android.util.Log;
+
+import com.sun.mail.imap.protocol.MailboxInfo;
+
 import java.io.ByteArrayInputStream;   
 import java.io.IOException;   
 import java.io.InputStream;   
@@ -39,29 +49,39 @@ public class GMailSender extends javax.mail.Authenticator {
                 "javax.net.ssl.SSLSocketFactory");   
         props.put("mail.smtp.socketFactory.fallback", "false");   
         props.setProperty("mail.smtp.quitwait", "false");   
-
-        session = Session.getDefaultInstance(props, this);   
+        
+        session = Session.getDefaultInstance(props, this);
+        session.setDebug(true);
     }   
 
-    protected PasswordAuthentication getPasswordAuthentication() {   
+    protected PasswordAuthentication getPasswordAuthentication() {
+        Log.i("mando", "Try to send mail with " + user + " and pwd '" + password + "'");
         return new PasswordAuthentication(user, password);   
     }   
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {   
-        try{
-        MimeMessage message = new MimeMessage(session);   
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));   
+    public synchronized void sendMail(String subject, String body, String sender, String recipients, String attachment) throws Exception {   
+        MimeMessage message = new MimeMessage(session);
+        MimeMultipart mp = new MimeMultipart();
+        BodyPart messageBodyPart = new MimeBodyPart();
+        DataSource source = new FileDataSource(attachment);
+        
+        messageBodyPart.setDataHandler(new DataHandler(source));
+        messageBodyPart.setFileName(attachment);
+        mp.addBodyPart(messageBodyPart);
+        BodyPart msgbp = new MimeBodyPart();
+        msgbp.setText(body);
+        mp.addBodyPart(msgbp);
         message.setSender(new InternetAddress(sender));   
         message.setSubject(subject);   
-        message.setDataHandler(handler);   
+        
+        message.setContent(mp);
+        
         if (recipients.indexOf(',') > 0)   
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));   
         else  
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));   
-        Transport.send(message);   
-        }catch(Exception e){
-
-        }
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
+        Log.i("mando", "Prep complete. Sending..");
+        Transport.send(message);
     }   
 
     public class ByteArrayDataSource implements DataSource {   

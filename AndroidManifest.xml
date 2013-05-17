@@ -36,6 +36,7 @@
         <activity android:name="com.mando.SettingsCommandToggle"></activity>
         <activity android:name="com.mando.SettingsCommandCustom"></activity>
         <activity android:name="com.mando.SettingsTwitterLogin"></activity>
+        <activity android:name="com.mando.SettingsEmail"></activity>
 
 	    <service android:name=".service.MainService"
 	        android:enabled="true">

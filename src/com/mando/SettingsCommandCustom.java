@@ -23,9 +23,11 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.SettingsController;
+import com.mando.mailer.EmailSettings;
 
 public class SettingsCommandCustom extends SherlockActivity {
-    private static int FROM_TWITTER_LOGIN_WINDOW = 0;
+    private static final int FROM_TWITTER_LOGIN_WINDOW = 0;
+    private static final int FROM_EMAIL_SETTINGS = 1;
     
     RequestToken mRequestToken;
     Twitter mTwitter = null;
@@ -66,9 +68,19 @@ public class SettingsCommandCustom extends SherlockActivity {
         case 1:
         case 2:
         case 3:
-        case 4:
         case 5:
             setContentView(R.layout.activity_settings_commandcustom);
+            break;
+        case 4:
+            setContentView(R.layout.activity_settings_email);
+            Button emailButton = (Button) findViewById(R.id.customcommand_emailsettings);
+            emailButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    startActivityForResult(new Intent(SettingsCommandCustom.this, SettingsEmail.class), FROM_EMAIL_SETTINGS);
+                }
+            });
+            refreshEmailSettings();
             break;
         case 6: // Twitter
             // Oh well, Android ICS Network Thread Problem
@@ -166,7 +178,8 @@ public class SettingsCommandCustom extends SherlockActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent)
     {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == FROM_TWITTER_LOGIN_WINDOW) {
+        switch (requestCode) {
+        case FROM_TWITTER_LOGIN_WINDOW:
             if (resultCode == RESULT_OK) {
                 AccessToken accessToken = null;
                 
@@ -186,6 +199,22 @@ public class SettingsCommandCustom extends SherlockActivity {
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, "Mando gagal tersambung ke Twitter", Toast.LENGTH_LONG).show();
             }
+            break;
+        case FROM_EMAIL_SETTINGS:
+            refreshEmailSettings();
+            break;
+        default: // do nothing
+        }
+    }
+
+    private void refreshEmailSettings() {
+        TextView tv = (TextView) findViewById(R.id.customcommand_status);
+        SettingsController s = new SettingsController(this);
+        EmailSettings em = s.getEmailSettings();
+        if (em.username.length() == 0) {
+            tv.setText(R.string.email_notset);
+        } else {
+            tv.setText("Tersambung sebagai " + em.username);
         }
     }
 }
