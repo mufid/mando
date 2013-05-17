@@ -42,12 +42,12 @@ public class Mailer extends javax.mail.Authenticator {
         if (em.server.equals(EmailServerType.GMail)) {
             em.serverAddr = "smtp.gmail.com";
             em.port = "465";
+            em.isTLS = false;
             em.isSSL = true;
         }        
-        
+        Log.e("mando", "send via: " + em.serverAddr + ":" + em.port);
         Properties props = new Properties();   
         props.setProperty("mail.transport.protocol", "smtp");
-        if (em.server.equals(EmailServerType.GMail))
             
         props.setProperty("mail.host", em.serverAddr);   
         props.put("mail.smtp.auth", "true");

@@ -118,7 +118,6 @@ public class SettingsTest extends SherlockActivity {
                         protected Void doInBackground(String... params) {
                             String username = params[0];
                             String password = params[1];
-                            Log.i("mando", "at inline, usr: " + username + " pwd: " + password);
                             try {   
                                 Mailer sender = new Mailer(xy);
                                 sender.sendMail("This is Subject",   
@@ -135,7 +134,6 @@ public class SettingsTest extends SherlockActivity {
 
                     };
                     
-                    Log.i("mando", "usr: " + xy.username + " pwd: " + xy.password);
                     x.execute(xy.username, xy.password);
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[5])) {

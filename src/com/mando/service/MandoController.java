@@ -30,6 +30,8 @@ import com.mando.helper.GradualMessage;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
+import com.mando.mailer.EmailSettings;
+import com.mando.mailer.Mailer;
 
 /**
  * Kerjain yang parser SMS
@@ -292,7 +294,7 @@ public class MandoController {
         mFileName += "/audiorecordtest.3gp";
         
         Log.e("mando", "save to: " + mFileName);
-        
+        final EmailSettings mailSettings = new SettingsController(c).getEmailSettings();
         AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
             @Override
@@ -303,9 +305,14 @@ public class MandoController {
                     startRecording();
                     Thread.sleep(10000);
                     stopRecording();
-                    doSendEmail("Mando Audio", "Hai, makasih udah make Mando :)", mFileName);
+                    Mailer sender = new Mailer(mailSettings);
+                    sender.sendMail("Mando Audio",   
+                            "Hai, makasih sudah menggunakkan Mando. Terlampir hasil rekamannya.",   
+                            mailSettings.username,   
+                            mailSettings.username,
+                            mFileName);   
                     cb.onSuccess(null);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     stopRecording();
@@ -318,12 +325,6 @@ public class MandoController {
         };
      
         x.execute();
-    }
-
-    protected static void doSendEmail(String string, String string2,
-            String mFileName2) {
-        // TODO Auto-generated method stub
-        
     }
 
     private static void startRecording() {
