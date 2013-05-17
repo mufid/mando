@@ -33,10 +33,10 @@ public class MandoSMSReceiver extends BroadcastReceiver {
 
                 MandoController.processSMS(strMsgBody, strMsgSrc, context);
             }
-
+            
         }
         
-        abortBroadcast();
+      
     }
 
 }

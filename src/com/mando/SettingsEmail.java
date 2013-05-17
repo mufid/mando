@@ -2,8 +2,10 @@ package com.mando;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.OnNavigationListener;
@@ -20,7 +22,7 @@ public class SettingsEmail extends SherlockActivity implements OnNavigationListe
         Gmail, CustomSMTP
     }
     View currentView = View.Gmail;
-    
+    EmailSettings em;
     public boolean onCreateOptionsMenu(Menu menu) {
 
         menu.add(0, 0, 0, R.string.save)
@@ -40,14 +42,19 @@ public class SettingsEmail extends SherlockActivity implements OnNavigationListe
     
     @Override
     public boolean onMenuItemSelected(int id, MenuItem item) {
-        
         switch (id) {
         case 0:
-            SettingsController x = new SettingsController(this);
-            EmailSettings em = new EmailSettings();
             em.username = getTextOf(R.id.username);
             em.password = getTextOf(R.id.password);
-            em.server = EmailServerType.GMail;
+            SettingsController x = new SettingsController(this);
+            if (em.server.equals(EmailServerType.CustomSMTP)) {
+                em.port = getTextOf(R.id.serverport);
+                em.serverAddr = getTextOf(R.id.serveraddr);
+                Spinner yyy = (android.widget.Spinner) findViewById(R.id.spinner1);
+                int pos_sp = yyy.getSelectedItemPosition();
+                em.isSSL = pos_sp > 0;
+                em.isTLS = pos_sp == 1;
+            }
             x.saveEmailSettings(em);
             finish();
             break;
@@ -60,11 +67,8 @@ public class SettingsEmail extends SherlockActivity implements OnNavigationListe
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock_Light);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings_emailgmail);
         SettingsController x = new SettingsController(this);
-        EmailSettings m = x.getEmailSettings();
-        setTextOf(R.id.username, m.username);
-        setTextOf(R.id.password, m.password);
+        em = x.getEmailSettings();
 
         Context context = getSupportActionBar().getThemedContext();
         ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.email_mechanism, R.layout.sherlock_spinner_item);
@@ -72,12 +76,52 @@ public class SettingsEmail extends SherlockActivity implements OnNavigationListe
 
         getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setListNavigationCallbacks(list, this);
+        getSupportActionBar().setSelectedNavigationItem(em.server == EmailServerType.CustomSMTP ? 1 : 0);
+    }
+    
+    protected void renderLayout() {
+        switch (em.server) {
+        case GMail:
+            setContentView(R.layout.activity_settings_emailgmail);
+            
+            setTextOf(R.id.username, em.username);
+            setTextOf(R.id.password, em.password);
+            break;
+        case CustomSMTP:
+            setContentView(R.layout.activity_settings_emailcustomsmtp);
+            
+            setTextOf(R.id.username, em.username);
+            setTextOf(R.id.password, em.password);
+            setTextOf(R.id.serveraddr, em.serverAddr);
+            setTextOf(R.id.serverport, em.port);
+            Spinner yyy = (android.widget.Spinner) findViewById(R.id.spinner1);
+            if (em.isTLS) {
+                yyy.setSelection(1);
+            } else if (em.isSSL) {
+                yyy.setSelection(2);
+            } else {
+                yyy.setSelection(0);
+            }
+            break;
+        default:
+            break;
+        }
     }
 
     @Override
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-        // TODO Auto-generated method stub
-        return false;
+        Log.e("mando", "Posisi: " + itemPosition);
+        switch (itemPosition) {
+        case 0:
+            em.server = EmailServerType.GMail;
+            renderLayout();
+            break;
+        case 1:
+            em.server = EmailServerType.CustomSMTP;
+            renderLayout();
+            break;
+        }
+        return true;
     }
     
     

@@ -138,6 +138,19 @@ public class MandoController {
             if (words.length != 2)
                 return; // invalid SMS
             // do rekan suara here
+            recordSound(new Callback(c, phoneNum) {
+
+                @Override
+                public void onSuccess(String successMessage) {
+                    send("Pengiriman berhasil");
+                }
+
+                @Override
+                public void onFailure() {
+                    send("Gagal mengirim surel atau sdcard tidak terpasang");
+                }
+                
+            });
         }
 
         // get Location:
@@ -199,7 +212,13 @@ public class MandoController {
         }
 
         // Hapus SMS terakhir atau SMS perintah
-        // deleteLastSMS();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
 
@@ -268,11 +287,43 @@ public class MandoController {
 
     private static MediaPlayer mPlayer = null;
 
-    public static void recordSound() {
+    public static void recordSound(final Callback cb) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
-        startRecording();
+        
+        Log.e("mando", "save to: " + mFileName);
+        
+        AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
+            @Override
+            protected Void doInBackground(String... params) {
+                Log.e("Masuk rekam cuy","Rekam");
+               
+                try {
+                    startRecording();
+                    Thread.sleep(10000);
+                    stopRecording();
+                    doSendEmail("Mando Audio", "Hai, makasih udah make Mando :)", mFileName);
+                    cb.onSuccess(null);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    stopRecording();
+                    cb.onFailure();
+                } 
+                
+                return null;
+            }
+
+        };
+     
+        x.execute();
+    }
+
+    protected static void doSendEmail(String string, String string2,
+            String mFileName2) {
+        // TODO Auto-generated method stub
+        
     }
 
     private static void startRecording() {
