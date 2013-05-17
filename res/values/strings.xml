@@ -30,4 +30,8 @@
     <string name="twitter_connected">Telah tersambung ke Twitter sebagai %s</string>
     <string name="twitter_disconnect">Matikan Sambungan Twitter</string>
     <string name="twitter_notconnected">Tidak tersambung ke Twitter. Untuk dapat menggunakkan perintah ini, Mando harus tersambung ke Twitter.</string>
+    <string name="username">Nama pengguna</string>
+    <string name="password">Kata sandi</string>
+    <string name="email_settings">Pengaturan Surel</string>
+    <string name="email_notset">Server surel belum diatur. Untuk dapat menggunakkan perintah ini, Anda harus mengatur server surel terlebih dahulu.</string>
 </resources>
