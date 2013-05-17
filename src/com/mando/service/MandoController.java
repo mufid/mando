@@ -30,6 +30,8 @@ import com.mando.helper.GradualMessage;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
+import com.mando.mailer.EmailSettings;
+import com.mando.mailer.Mailer;
 
 /**
  * Kerjain yang parser SMS
@@ -138,6 +140,19 @@ public class MandoController {
             if (words.length != 2)
                 return; // invalid SMS
             // do rekan suara here
+            recordSound(new Callback(c, phoneNum) {
+
+                @Override
+                public void onSuccess(String successMessage) {
+                    send("Pengiriman berhasil");
+                }
+
+                @Override
+                public void onFailure() {
+                    send("Gagal mengirim surel atau sdcard tidak terpasang");
+                }
+                
+            });
         }
 
         // get Location:
@@ -199,7 +214,13 @@ public class MandoController {
         }
 
         // Hapus SMS terakhir atau SMS perintah
-        // deleteLastSMS();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
 
@@ -268,11 +289,42 @@ public class MandoController {
 
     private static MediaPlayer mPlayer = null;
 
-    public static void recordSound() {
+    public static void recordSound(final Callback cb) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
-        startRecording();
+        
+        Log.e("mando", "save to: " + mFileName);
+        final EmailSettings mailSettings = new SettingsController(c).getEmailSettings();
+        AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
+            @Override
+            protected Void doInBackground(String... params) {
+                Log.e("Masuk rekam cuy","Rekam");
+               
+                try {
+                    startRecording();
+                    Thread.sleep(10000);
+                    stopRecording();
+                    Mailer sender = new Mailer(mailSettings);
+                    sender.sendMail("Mando Audio",   
+                            "Hai, makasih sudah menggunakkan Mando. Terlampir hasil rekamannya.",   
+                            mailSettings.username,   
+                            mailSettings.username,
+                            mFileName);   
+                    cb.onSuccess(null);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    stopRecording();
+                    cb.onFailure();
+                } 
+                
+                return null;
+            }
+
+        };
+     
+        x.execute();
     }
 
     private static void startRecording() {

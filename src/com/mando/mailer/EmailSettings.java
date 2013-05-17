@@ -10,4 +10,6 @@ public class EmailSettings {
     // Untuk custom
     public String port;
     public String serverAddr;
+    public boolean isTLS;
+    public boolean isSSL;
 }

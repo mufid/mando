@@ -214,7 +214,7 @@ public class SettingsCommandCustom extends SherlockActivity {
         if (em.username.length() == 0) {
             tv.setText(R.string.email_notset);
         } else {
-            tv.setText("Tersambung sebagai " + em.username);
+            tv.setText("Terkonfigurasi atas " + em.username);
         }
     }
 }
