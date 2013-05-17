@@ -26,11 +26,12 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.Callback;
 import com.mando.helper.CallbackLocation;
 import com.mando.helper.LocationHelper;
+import com.mando.helper.NullCallback;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
 import com.mando.mailer.EmailSettings;
-import com.mando.mailer.GMailSender;
+import com.mando.mailer.Mailer;
 import com.mando.service.MandoController;
 
 // Implement LocationListener, biar bisa update lokasi.
@@ -109,6 +110,7 @@ public class SettingsTest extends SherlockActivity {
                     });
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[4])) {
+                    final EmailSettings xy = new SettingsController(getApplicationContext()).getEmailSettings();
                     AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
                         @SuppressLint("SdCardPath")
@@ -116,9 +118,8 @@ public class SettingsTest extends SherlockActivity {
                         protected Void doInBackground(String... params) {
                             String username = params[0];
                             String password = params[1];
-                            Log.i("mando", "at inline, usr: " + username + " pwd: " + password);
                             try {   
-                                GMailSender sender = new GMailSender(username, password);
+                                Mailer sender = new Mailer(xy);
                                 sender.sendMail("This is Subject",   
                                         "This is Body",   
                                         username,   
@@ -132,9 +133,12 @@ public class SettingsTest extends SherlockActivity {
                         }
 
                     };
-                    EmailSettings xy = new SettingsController(getApplicationContext()).getEmailSettings();
-                    Log.i("mando", "usr: " + xy.username + " pwd: " + xy.password);
+                    
                     x.execute(xy.username, xy.password);
+                } else if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[5])) {
+                    MandoController.c = getApplicationContext();
+                    MandoController.recordSound(new NullCallback());
                 }
             }
 

@@ -25,7 +25,7 @@ import java.io.OutputStream;
 import java.security.Security;   
 import java.util.Properties;   
 
-public class GMailSender extends javax.mail.Authenticator {   
+public class Mailer extends javax.mail.Authenticator {   
     private String mailhost = "smtp.gmail.com";   
     private String user;   
     private String password;   
@@ -35,18 +35,34 @@ public class GMailSender extends javax.mail.Authenticator {
         Security.addProvider(new JSSEProvider());   
     }  
 
-    public GMailSender(String user, String password) {   
-        this.user = user;   
-        this.password = password;   
+    public Mailer(EmailSettings em) {   
+        this.user = em.username;   
+        this.password = em.password;   
 
+        if (em.server.equals(EmailServerType.GMail)) {
+            em.serverAddr = "smtp.gmail.com";
+            em.port = "465";
+            em.isTLS = false;
+            em.isSSL = true;
+        }        
+        Log.e("mando", "send via: " + em.serverAddr + ":" + em.port);
         Properties props = new Properties();   
-        props.setProperty("mail.transport.protocol", "smtp");   
-        props.setProperty("mail.host", mailhost);   
-        props.put("mail.smtp.auth", "true");   
-        props.put("mail.smtp.port", "465");   
-        props.put("mail.smtp.socketFactory.port", "465");   
-        props.put("mail.smtp.socketFactory.class",   
-                "javax.net.ssl.SSLSocketFactory");   
+        props.setProperty("mail.transport.protocol", "smtp");
+            
+        props.setProperty("mail.host", em.serverAddr);   
+        props.put("mail.smtp.auth", "true");
+            
+        props.put("mail.smtp.port", em.port);   
+        props.put("mail.smtp.socketFactory.port", em.port);
+        if (em.isTLS) {
+            props.put("mail.smtp.starttls.enable","true");
+            props.put("mail.smtp.socketFactory.class",   
+                    "javax.net.ssl.SSLSocketFactory");   
+        }
+        if (em.isSSL) {
+            props.put("mail.smtp.socketFactory.class",   
+                    "javax.net.ssl.SSLSocketFactory");   
+        }
         props.put("mail.smtp.socketFactory.fallback", "false");   
         props.setProperty("mail.smtp.quitwait", "false");   
         

@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 
 import com.mando.R;
@@ -218,11 +219,21 @@ public class SettingsController {
             serverType = EmailServerType.GMail;
         } else {
             serverType = EmailServerType.valueOf(retrievedServerType);
+            x.port = emptyStringOrNull(SettingsHelper.read("email-port"));
+            x.serverAddr = emptyStringOrNull(SettingsHelper.read("email-serveraddr"));
+            x.isSSL = falseOrNull(SettingsHelper.read("email-isssl"));
+            x.isTLS = falseOrNull(SettingsHelper.read("email-istls"));
         }
         x.server = serverType;
         return x;
     }
     
+    private boolean falseOrNull(String read) {
+        if (read == null) return false;
+        else {
+            return Boolean.parseBoolean(read);
+        }
+    }
     
     private String emptyStringOrNull(String read) {
         return read == null ? "" : read;
@@ -233,5 +244,9 @@ public class SettingsController {
         SettingsHelper.store("email-username", em.username);
         SettingsHelper.store("email-password", em.password);
         SettingsHelper.store("email-servertype", em.server.toString());
+        SettingsHelper.store("email-port", em.port);
+        SettingsHelper.store("email-serveraddr", em.serverAddr);
+        SettingsHelper.store("email-isssl", em.isSSL ? "true" : "false");
+        SettingsHelper.store("email-istls", em.isTLS ? "true" : "false");
     }
 }
