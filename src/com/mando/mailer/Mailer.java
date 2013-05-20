@@ -67,11 +67,9 @@ public class Mailer extends javax.mail.Authenticator {
         props.setProperty("mail.smtp.quitwait", "false");   
         
         session = Session.getDefaultInstance(props, this);
-        session.setDebug(true);
     }   
 
     protected PasswordAuthentication getPasswordAuthentication() {
-        Log.i("mando", "Try to send mail with " + user + " and pwd '" + password + "'");
         return new PasswordAuthentication(user, password);   
     }   
 

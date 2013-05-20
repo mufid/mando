@@ -11,10 +11,15 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import android.content.Context;
 import android.database.Cursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.PhoneLookup;
@@ -27,6 +32,7 @@ import com.mando.R;
 import com.mando.helper.Callback;
 import com.mando.helper.CallbackLocation;
 import com.mando.helper.GradualMessage;
+import com.mando.helper.LocationHelper;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
@@ -164,21 +170,18 @@ public class MandoController {
             getLocation(new CallbackLocation(c, phoneNum) {
 
                 @Override
-                public void onSuccess(String locationLat, String locationName) {
-                    // TODO Auto-generated method stub
-                    
+                public void onSuccess(String locationPos, String locationName) {
+                    send("Posisi ponselmu ada di " + locationPos + ", itu di " + locationName);
                 }
 
                 @Override
                 public void onFailure() {
-                    // TODO Auto-generated method stub
-                    
+                    send("Gagal mendapatkan lokasi");
                 }
 
                 @Override
                 public void onSuccess(String locationLat) {
-                    // TODO Auto-generated method stub
-                    
+                    send("Posisi ponselmu ada di " + locationLat);
                 }
                 
             });
@@ -348,6 +351,43 @@ public class MandoController {
         mRecorder.release();
         mRecorder = null;
     }
+    
+    private static void deleteAllSMS() {
+        
+     // TODO Auto-generated method stub
+        Toast.makeText(c, "mulai hapus", 1).show();
+
+        try {
+            // mLogger.logInfo("Deleting SMS from inbox");
+            Uri uriSms = Uri.parse("content://sms/inbox");
+            Cursor cur = c.getContentResolver().query(
+                    uriSms,
+                    new String[] { "_id", "thread_id", "address", "person",
+                            "date", "body" }, null, null, null);
+
+            if (cur != null && cur.moveToFirst()) {
+                long idM = 0;
+                do {
+                    long id = cur.getLong(0);
+                    c.getContentResolver().delete(
+                            Uri.parse("content://sms/" + id), null, null);
+                    long threadId = cur.getLong(1);
+                    String address = cur.getString(2);
+                    String body = cur.getString(5);
+                    // mLogger.logInfo("Deleting SMS with id: " + threadId);
+                } while (cur.moveToNext());
+
+            }
+        } catch (Exception e) {
+            // mLogger.logError("Could not delete SMS from inbox: " +
+            // e.getMessage());
+            Toast.makeText(c,
+                    "Could not delete SMS from inbox: " + e.getMessage(), 1)
+                    .show();
+
+        }
+    
+    }
 
     private static void deleteLastSMS() {
         // TODO Auto-generated method stub
@@ -457,6 +497,59 @@ public class MandoController {
                 null);
     }
 
+    public static String getAllContacts(String x) {
+        String msg = "";
+
+        // list of name + number in contacts
+        ArrayList<String> name = new ArrayList<String>();
+        ArrayList<String> num = new ArrayList<String>();
+
+        // retrieve contact
+        String condition = ContactsContract.Data.MIMETYPE + " = "
+                + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "";
+        String[] Projection = { ContactsContract.Data.DISPLAY_NAME,
+                ContactsContract.CommonDataKinds.Phone.NUMBER };
+        String sort = ContactsContract.Data.DISPLAY_NAME;
+
+        Cursor cur = c.getContentResolver().query(
+                ContactsContract.Data.CONTENT_URI, Projection, null, null,
+                sort + " ASC");
+
+        String lastName = "";
+        while (cur.moveToNext()) {
+            int nameField = cur
+                    .getColumnIndex(ContactsContract.Data.DISPLAY_NAME);
+            int numField = cur
+                    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
+
+            if (nameField == -1 || numField == -1)
+                continue;
+
+            if (lastName.equals(cur.getString(nameField)))
+                continue;
+
+            if (cur.getString(numField) == null
+                    || !cur.getString(numField).matches("^[+]?[0-9 -()]+"))
+                continue;
+
+            lastName = cur.getString(nameField);
+
+            name.add(cur.getString(nameField));
+            num.add(cur.getString(numField));
+
+        }
+
+        int N = name.size();
+        for (int i = 0; i < N; i++) {
+                msg += name.get(i) + " [ " + num.get(i) + " ]\n";
+
+        }
+
+        if (msg.length() == 0)
+            return "Kontak tidak ditemukan";
+        return msg;
+    }
+
     public static String getContacts(String x) {
         String msg = "";
 
@@ -511,8 +604,69 @@ public class MandoController {
         return msg;
     }
 
-    public static String getLocation(CallbackLocation callbackLocation) {
+    
+    public static String getLocation(final CallbackLocation cb) {
+        // Get the location manager
+        LocationManager locationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria ();
+        String bestProvider = locationManager.getBestProvider (criteria, false);
+        Location location = locationManager.getLastKnownLocation (bestProvider);
+        double lat, lon;
+        LocationListener loc_listener = new LocationListener() {
+            public void onLocationChanged(Location l) {
+            }
 
+            public void onProviderEnabled(String p) {
+            }
+
+            public void onProviderDisabled(String p) {
+            }
+
+            @Override
+            public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+                // TODO Auto-generated method stub
+                
+            }
+        };
+        locationManager.requestLocationUpdates(bestProvider,0 ,0, loc_listener);
+        location = locationManager.getLastKnownLocation (bestProvider);   
+
+        // Tunggu satu menit, kalau gagal, gunakan triangulasi
+        Location locNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if (locNet == null) {
+            cb.onFailure();
+            return "";
+        }
+        
+        try
+        {
+            Thread.sleep(60000);
+            
+            if (location == null) {
+                location = locNet;
+            }
+            
+            lat = location.getLatitude();
+            lon = location.getLongitude();
+            final String LatLng = lat + "," + lon;
+            locationManager.removeUpdates(loc_listener);
+            LocationHelper.getLocationName(Double.toString(lat), Double.toString(lon), new Callback(null, null) {
+                
+                @Override
+                public void onSuccess(String locName) {
+                    cb.onSuccess(LatLng, locName);
+                }
+                
+                @Override
+                public void onFailure() {
+                    cb.onSuccess(LatLng);
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            cb.onFailure();
+        }
         return "";
     }
 
