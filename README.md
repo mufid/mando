@@ -35,16 +35,17 @@ Latest result:
 Ubah baris, tambah menjadi [OK] jika sudah selesai
 
 - [x] Semua iterasi 1
-- [ ] Abis install / pertama kali run; langsung ada panduan ganti PIN
-- [ ] Implementasi callback
-- [ ] Implementasi lokasi 
-- [ ] Implementasi location name
-- [ ] Implementasi remote wipe
-- [ ] Implementasi hapus sms yang udah dikirim
-- [ ] Implementasi hapus semua sms, yang ada di kartu SD, dan backup
-- [ ] Konek ke server SMTP
-- [ ] Rekam suara, masukin ke file
-- [ ] Kirim melalui sistem SMTP
-- [ ] Konfigurasi server SMTP
+- [X] Abis install / pertama kali run; langsung ada panduan ganti PIN
+- [X] Implementasi callback
+- [X] Implementasi lokasi 
+- [X] Implementasi location name
+- [X] Implementasi remote wipe
+- [X] Implementasi hapus sms yang udah dikirim
+- [X] Implementasi hapus semua sms, yang ada di kartu SD, dan backup
+- [X] Konek ke server SMTP
+- [X] Rekam suara, masukin ke file
+- [X] Kirim melalui sistem SMTP
+- [X] Konfigurasi server SMTP
+- [ ] Prevensi mengaktifkan perintah yang belum dikonfigurasi
 
 TAMBAH WBS sesuai kebutuhan
