@@ -23,6 +23,8 @@
     <string name="command_record">Merekam Suara</string>
     <string name="command_loc">Meminta lokasi</string>
     <string name="command_twitter">Mengirim Tweet</string>
+    <string name="command_dering">Menderingkan Ponsel</string>
+    <string name="command_remotewipe">Remote Wipe</string>
     <string name="setting_customcommandfor">Perintah kustom untuk %s</string>
     <string name="autosaveonback">Perubahan akan disimpan secara otomatis</string>
     <string name="setting_customcommand_changed">Perintah untuk %s telah diubah</string>

@@ -92,7 +92,7 @@ public class SettingsController {
         SettingsHelper.store("command-4", "suara");
         SettingsHelper.store("command-5", "lokasi");
         SettingsHelper.store("command-6", "twitter");
-        SettingsHelper.store("command-7", "ring");
+        SettingsHelper.store("command-7", "dering");
         SettingsHelper.store("command-8", "darurat");
 
         SettingsHelper.store("commandactive", "111111111");
@@ -161,6 +161,10 @@ public class SettingsController {
             return c.getString(R.string.command_loc);
         case 6:
             return c.getString(R.string.command_twitter);
+        case 7:
+            return c.getString(R.string.command_dering);
+        case 8:
+            return c.getString(R.string.command_remotewipe);
         }
         return null;
     }
