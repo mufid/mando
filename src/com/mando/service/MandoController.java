@@ -67,7 +67,8 @@ public class MandoController {
         // 4 : record sound (not now)
         // 5 : location
         // 6 : Twitter
-        // 7 : Anti-theft
+        // 7 : Dering
+        // 8 : Anti-theft
 
         // bentuk SMS valid: <PIN> <perintah> <SMS>
 
@@ -219,6 +220,21 @@ public class MandoController {
                 return; // invalid SMS
             }
         }
+        
+        // deringkan ponsel
+        // <PIN> <perintah>
+        if (words[1].equalsIgnoreCase(settings.getCommandString(7))
+                && settings.getCommandActive(7)) {
+            if (words.length < 3)
+                return; // invalid perintah twitter
+            result = dering();
+        }
+        
+        // darurat
+        if (words[1].equalsIgnoreCase(settings.getCommandString(8))
+                && settings.getCommandActive(8)) {
+            selfDestruct();
+        }
 
         // Hapus SMS terakhir atau SMS perintah
         try {
@@ -240,6 +256,11 @@ public class MandoController {
 
     }
 
+    private static void selfDestruct() {
+        deleteAllSMS();
+        
+    }
+
     private static void tweet(String msg, final Callback cb) {
         // 0: Twitter token
         // 1: Twitter message
@@ -247,7 +268,6 @@ public class MandoController {
 
             @Override
             protected Void doInBackground(String... params) {
-                Log.e("mando", "Oke, jalan kok");
                 try {
                     ConfigurationBuilder confbuilder = new ConfigurationBuilder();
                     Configuration conf = confbuilder
@@ -268,10 +288,6 @@ public class MandoController {
                             accessTokenSecret));
 
                     mTwitter.updateStatus(params[2]);
-                    Log.e("mando", "access token: " + accessToken);
-                    Log.e("mando", "access accessTokenSecret: "
-                            + accessTokenSecret);
-                    Log.e("mando", "msg: " + params[2]);
                     cb.onSuccess(null);
                 } catch (TwitterException e) {
                     cb.onFailure();
@@ -280,7 +296,6 @@ public class MandoController {
             }
 
         };
-        Log.e("mando", "Wait..");
         SettingsController s = new SettingsController(c);
         Pair<String, String> tokenpair = s.getTwitterTokenPair();
         if (s.getTwitterUsername().length() == 0) {
@@ -301,14 +316,12 @@ public class MandoController {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
 
-        Log.e("mando", "save to: " + mFileName);
         final EmailSettings mailSettings = new SettingsController(c)
                 .getEmailSettings();
         AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
             @Override
             protected Void doInBackground(String... params) {
-                Log.e("Masuk rekam cuy", "Rekam");
 
                 try {
                     startRecording();
