@@ -15,8 +15,11 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -138,7 +141,7 @@ public class MandoController {
                 return; // invalid SMS
             result = getHelp(phoneNum);
         }
-        
+
         // Do rekam suara
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(4))
@@ -157,7 +160,7 @@ public class MandoController {
                 public void onFailure() {
                     send("Gagal mengirim surel atau sdcard tidak terpasang");
                 }
-                
+
             });
         }
 
@@ -171,7 +174,8 @@ public class MandoController {
 
                 @Override
                 public void onSuccess(String locationPos, String locationName) {
-                    send("Posisi ponselmu ada di " + locationPos + ", itu di " + locationName);
+                    send("Posisi ponselmu ada di " + locationPos + ", itu di "
+                            + locationName);
                 }
 
                 @Override
@@ -183,7 +187,7 @@ public class MandoController {
                 public void onSuccess(String locationLat) {
                     send("Posisi ponselmu ada di " + locationLat);
                 }
-                
+
             });
         }
 
@@ -265,7 +269,8 @@ public class MandoController {
 
                     mTwitter.updateStatus(params[2]);
                     Log.e("mando", "access token: " + accessToken);
-                    Log.e("mando", "access accessTokenSecret: " + accessTokenSecret);
+                    Log.e("mando", "access accessTokenSecret: "
+                            + accessTokenSecret);
                     Log.e("mando", "msg: " + params[2]);
                     cb.onSuccess(null);
                 } catch (TwitterException e) {
@@ -295,38 +300,39 @@ public class MandoController {
     public static void recordSound(final Callback cb) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
-        
+
         Log.e("mando", "save to: " + mFileName);
-        final EmailSettings mailSettings = new SettingsController(c).getEmailSettings();
+        final EmailSettings mailSettings = new SettingsController(c)
+                .getEmailSettings();
         AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
             @Override
             protected Void doInBackground(String... params) {
-                Log.e("Masuk rekam cuy","Rekam");
-               
+                Log.e("Masuk rekam cuy", "Rekam");
+
                 try {
                     startRecording();
                     Thread.sleep(10000);
                     stopRecording();
                     Mailer sender = new Mailer(mailSettings);
-                    sender.sendMail("Mando Audio",   
-                            "Hai, makasih sudah menggunakkan Mando. Terlampir hasil rekamannya.",   
-                            mailSettings.username,   
-                            mailSettings.username,
-                            mFileName);   
+                    sender.sendMail(
+                            "Mando Audio",
+                            "Hai, makasih sudah menggunakkan Mando. Terlampir hasil rekamannya.",
+                            mailSettings.username, mailSettings.username,
+                            mFileName);
                     cb.onSuccess(null);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     stopRecording();
                     cb.onFailure();
-                } 
-                
+                }
+
                 return null;
             }
 
         };
-     
+
         x.execute();
     }
 
@@ -351,10 +357,10 @@ public class MandoController {
         mRecorder.release();
         mRecorder = null;
     }
-    
+
     private static void deleteAllSMS() {
-        
-     // TODO Auto-generated method stub
+
+        // TODO Auto-generated method stub
         Toast.makeText(c, "mulai hapus", 1).show();
 
         try {
@@ -386,7 +392,7 @@ public class MandoController {
                     .show();
 
         }
-    
+
     }
 
     private static void deleteLastSMS() {
@@ -450,15 +456,15 @@ public class MandoController {
             gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms)
                     + ":\n<PIN> " + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n");
-        
+
         if (s.getCommandActive(2)) // kontak
             gm.addGradualMessage("\n" + c.getString(R.string.command_contact)
                     + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n");
-        
+
         if (s.getCommandActive(3)) // help
             gm.addGradualMessage("\n" + c.getString(R.string.command_help)
                     + ":\n<PIN> " + s.getCommandString(3) + "\n");
-        
+
         if (s.getCommandActive(4)) // suara
             gm.addGradualMessage("\n" + c.getString(R.string.command_record)
                     + ":\n<PIN> " + s.getCommandString(4)
@@ -541,7 +547,7 @@ public class MandoController {
 
         int N = name.size();
         for (int i = 0; i < N; i++) {
-                msg += name.get(i) + " [ " + num.get(i) + " ]\n";
+            msg += name.get(i) + " [ " + num.get(i) + " ]\n";
 
         }
 
@@ -604,13 +610,13 @@ public class MandoController {
         return msg;
     }
 
-    
     public static String getLocation(final CallbackLocation cb) {
         // Get the location manager
-        LocationManager locationManager = (LocationManager) c.getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria ();
-        String bestProvider = locationManager.getBestProvider (criteria, false);
-        Location location = locationManager.getLastKnownLocation (bestProvider);
+        LocationManager locationManager = (LocationManager) c
+                .getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        String bestProvider = locationManager.getBestProvider(criteria, false);
+        Location location = locationManager.getLastKnownLocation(bestProvider);
         double lat, lon;
         LocationListener loc_listener = new LocationListener() {
             public void onLocationChanged(Location l) {
@@ -625,46 +631,46 @@ public class MandoController {
             @Override
             public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
                 // TODO Auto-generated method stub
-                
+
             }
         };
-        locationManager.requestLocationUpdates(bestProvider,0 ,0, loc_listener);
-        location = locationManager.getLastKnownLocation (bestProvider);   
+        locationManager
+                .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
+        location = locationManager.getLastKnownLocation(bestProvider);
 
         // Tunggu satu menit, kalau gagal, gunakan triangulasi
-        Location locNet = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location locNet = locationManager
+                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if (locNet == null) {
             cb.onFailure();
             return "";
         }
-        
-        try
-        {
+
+        try {
             Thread.sleep(60000);
-            
+
             if (location == null) {
                 location = locNet;
             }
-            
+
             lat = location.getLatitude();
             lon = location.getLongitude();
             final String LatLng = lat + "," + lon;
             locationManager.removeUpdates(loc_listener);
-            LocationHelper.getLocationName(Double.toString(lat), Double.toString(lon), new Callback(null, null) {
-                
-                @Override
-                public void onSuccess(String locName) {
-                    cb.onSuccess(LatLng, locName);
-                }
-                
-                @Override
-                public void onFailure() {
-                    cb.onSuccess(LatLng);
-                }
-            });
-        }
-        catch (Exception e)
-        {
+            LocationHelper.getLocationName(Double.toString(lat),
+                    Double.toString(lon), new Callback(null, null) {
+
+                        @Override
+                        public void onSuccess(String locName) {
+                            cb.onSuccess(LatLng, locName);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            cb.onSuccess(LatLng);
+                        }
+                    });
+        } catch (Exception e) {
             cb.onFailure();
         }
         return "";
@@ -716,7 +722,46 @@ public class MandoController {
     }
 
     public static String dering() {
-        // TODO: Lakukan rutin di sini
+
+        Uri ringtoneUri = RingtoneManager
+                .getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        final Ringtone ringtone = RingtoneManager.getRingtone(c, ringtoneUri);
+
+        AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
+            @Override
+            protected Void doInBackground(String... params) {
+
+                try {
+                    AudioManager audio = (AudioManager) c
+                            .getSystemService(Context.AUDIO_SERVICE);
+                    int currentVolume = audio
+                            .getStreamVolume(AudioManager.STREAM_RING);
+                    int currentMode = audio.getRingerMode();
+
+                    audio.setRingerMode(AudioManager.RINGER_MODE_NORMAL);
+                    audio.setStreamVolume(AudioManager.STREAM_RING,
+                            audio.getStreamMaxVolume(AudioManager.STREAM_RING),
+                            0);
+
+                    ringtone.play();
+                    Thread.sleep(10000);
+                    ringtone.stop();
+
+                    audio.setRingerMode(currentMode);
+                    audio.setStreamVolume(AudioManager.STREAM_RING,
+                            currentVolume, 0);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    stopRecording();
+                }
+
+                return null;
+            }
+
+        };
+
+        x.execute();
 
         return "Berhasil Menderingkan";
     }
