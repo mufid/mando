@@ -1,13 +1,5 @@
 package com.mando;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.LocationManager;
@@ -29,7 +21,6 @@ import com.mando.helper.LocationHelper;
 import com.mando.helper.NullCallback;
 import com.mando.helper.SMS;
 import com.mando.helper.SettingsController;
-import com.mando.helper.SettingsHelper;
 import com.mando.mailer.EmailSettings;
 import com.mando.mailer.Mailer;
 import com.mando.service.MandoController;
@@ -52,7 +43,7 @@ public class SettingsTest extends SherlockActivity {
         // Setup lokasi.
         final LocationManager locationManager = (LocationManager) this
                 .getSystemService(Context.LOCATION_SERVICE);
-        //locationListener = new CallbackLocation(this, locationManager);
+        // locationListener = new CallbackLocation(this, locationManager);
 
         // End setup.
         lv.setAdapter(new ArrayAdapter<String>(this,
@@ -87,30 +78,35 @@ public class SettingsTest extends SherlockActivity {
                             MandoController.getContacts("Fi "), 1).show();
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[3])) {
-                    
+
                     final Handler handler = new Handler() {
                         public void handleMessage(Message msg) {
-                              if(msg.arg1 == 1)
-                                    Toast.makeText(getApplicationContext(), (String) msg.obj, Toast.LENGTH_LONG).show();
+                            if (msg.arg1 == 1)
+                                Toast.makeText(getApplicationContext(),
+                                        (String) msg.obj, Toast.LENGTH_LONG)
+                                        .show();
                         }
                     };
-                    
-                    LocationHelper.getLocationName("-5.280", "106.386", new Callback(null, null) {
-                        
-                        @Override
-                        public void onSuccess(String successMessage) {
-                            Message msg = new Message();
-                            msg.arg1 = 1;
-                            msg.obj = successMessage;
-                            handler.sendMessage(msg);
-                        }
-                        
-                        @Override
-                        public void onFailure() { }
-                    });
+
+                    LocationHelper.getLocationName("-5.280", "106.386",
+                            new Callback(null, null) {
+
+                                @Override
+                                public void onSuccess(String successMessage) {
+                                    Message msg = new Message();
+                                    msg.arg1 = 1;
+                                    msg.obj = successMessage;
+                                    handler.sendMessage(msg);
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                }
+                            });
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[4])) {
-                    final EmailSettings xy = new SettingsController(getApplicationContext()).getEmailSettings();
+                    final EmailSettings xy = new SettingsController(
+                            getApplicationContext()).getEmailSettings();
                     AsyncTask<String, Void, Void> x = new AsyncTask<String, Void, Void>() {
 
                         @SuppressLint("SdCardPath")
@@ -118,27 +114,29 @@ public class SettingsTest extends SherlockActivity {
                         protected Void doInBackground(String... params) {
                             String username = params[0];
                             String password = params[1];
-                            try {   
+                            try {
                                 Mailer sender = new Mailer(xy);
-                                sender.sendMail("This is Subject",   
-                                        "This is Body",   
-                                        username,   
-                                        username,
-                                        "/sdcard/tes.3gp");   
-                            } catch (Exception e) {   
-                                Log.e("SendMail", e.getMessage(), e);   
+                                sender.sendMail("This is Subject",
+                                        "This is Body", username, username,
+                                        "/sdcard/tes.3gp");
+                            } catch (Exception e) {
+                                Log.e("SendMail", e.getMessage(), e);
                             }
-                            
+
                             return null;
                         }
 
                     };
-                    
+
                     x.execute(xy.username, xy.password);
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[5])) {
                     MandoController.c = getApplicationContext();
                     MandoController.recordSound(new NullCallback());
+                } else if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[6])) {
+                    Toast.makeText(getApplicationContext(),
+                            MandoController.dering(), 1).show();
                 }
             }
 
