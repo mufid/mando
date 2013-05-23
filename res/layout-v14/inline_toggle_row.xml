@@ -12,7 +12,7 @@
                 android:layout_gravity="left"
                 android:layout_weight="1"
                 android:text="@string/menu_settings"
-                android:textSize="15sp" />
+                android:textSize="17sp" />
 
             <Switch
                 android:id="@+id/inline_togglerow_togglebutton"
