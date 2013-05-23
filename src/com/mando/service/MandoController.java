@@ -677,67 +677,74 @@ public class MandoController {
 
     public static String getLocation(final CallbackLocation cb) {
         // Get the location manager
-        LocationManager locationManager = (LocationManager) c
-                .getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        double lat, lon;
-        LocationListener loc_listener = new LocationListener() {
-            public void onLocationChanged(Location l) {
-            }
-
-            public void onProviderEnabled(String p) {
-            }
-
-            public void onProviderDisabled(String p) {
-            }
+        new AsyncTask<Void, Void, Void>(){
 
             @Override
-            public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-                // TODO Auto-generated method stub
+            protected Void doInBackground(Void... arg0) {
+                LocationManager locationManager = (LocationManager) c
+                        .getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                String bestProvider = locationManager.getBestProvider(criteria, false);
+                Location location = locationManager.getLastKnownLocation(bestProvider);
+                double lat, lon;
+                LocationListener loc_listener = new LocationListener() {
+                    public void onLocationChanged(Location l) {
+                    }
 
+                    public void onProviderEnabled(String p) {
+                    }
+
+                    public void onProviderDisabled(String p) {
+                    }
+
+                    @Override
+                    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+                        // TODO Auto-generated method stub
+
+                    }
+                };
+                locationManager
+                        .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
+                location = locationManager.getLastKnownLocation(bestProvider);
+
+                // Tunggu satu menit, kalau gagal, gunakan triangulasi
+                Location locNet = locationManager
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (locNet == null) {
+                    cb.onFailure();
+                    return null;
+                }
+
+                try {
+                    Thread.sleep(60000);
+
+                    if (location == null) {
+                        location = locNet;
+                    }
+
+                    lat = location.getLatitude();
+                    lon = location.getLongitude();
+                    final String LatLng = lat + "," + lon;
+                    locationManager.removeUpdates(loc_listener);
+                    LocationHelper.getLocationName(Double.toString(lat),
+                            Double.toString(lon), new Callback(null, null) {
+
+                                @Override
+                                public void onSuccess(String locName) {
+                                    cb.onSuccess(LatLng, locName);
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    cb.onSuccess(LatLng);
+                                }
+                            });
+                } catch (Exception e) {
+                    cb.onFailure();
+                }
+                return null;
             }
-        };
-        locationManager
-                .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
-        location = locationManager.getLastKnownLocation(bestProvider);
-
-        // Tunggu satu menit, kalau gagal, gunakan triangulasi
-        Location locNet = locationManager
-                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (locNet == null) {
-            cb.onFailure();
-            return "";
-        }
-
-        try {
-            Thread.sleep(60000);
-
-            if (location == null) {
-                location = locNet;
-            }
-
-            lat = location.getLatitude();
-            lon = location.getLongitude();
-            final String LatLng = lat + "," + lon;
-            locationManager.removeUpdates(loc_listener);
-            LocationHelper.getLocationName(Double.toString(lat),
-                    Double.toString(lon), new Callback(null, null) {
-
-                        @Override
-                        public void onSuccess(String locName) {
-                            cb.onSuccess(LatLng, locName);
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            cb.onSuccess(LatLng);
-                        }
-                    });
-        } catch (Exception e) {
-            cb.onFailure();
-        }
+        }.execute();
         return "";
     }
 
