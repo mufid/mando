@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.mando.R;
 import com.mando.mailer.EmailServerType;
@@ -17,7 +18,7 @@ public class SettingsController {
     /**
      * Perintah-perintah yang muncul ke pengguna 0: TODO 1: 2:
      */
-    private int[] visibleCommands = { 0, 1, 2, 4, 5, 6 };
+    private int[] visibleCommands = { 0, 1, 2, 4, 5, 6, 7, 8 };
 
     public SettingsController(Context c) {
         this.c = c;
@@ -95,7 +96,24 @@ public class SettingsController {
         SettingsHelper.store("command-7", "dering");
         SettingsHelper.store("command-8", "darurat");
 
-        SettingsHelper.store("commandactive", "111111111");
+        SettingsHelper.store("commandactive", "111101010");
+    }
+    
+    public String getFailureMessage(int commandID) {
+        switch (commandID) {
+        case 4:
+        case 8:
+            if (this.getEmailSettings().username.length() == 0)
+                return c.getString(R.string.email_settings_notset);
+            break;
+        case 6:
+            if (this.getTwitterUsername() == null)
+                return c.getString(R.string.email_settings_notset);
+            break;            
+        default:
+            return null;
+        }
+        return null;
     }
 
     public boolean getCommandActive(int i) {
@@ -134,7 +152,8 @@ public class SettingsController {
         if (activebin == null)
             initCommand();
         activebin = SettingsHelper.read("command-" + i);
-        return activebin;
+        Log.e("mando", "ID yang didapat: " + i);
+        return emptyStringOrNull(activebin);
     }
 
     public boolean setCommandString(int i, String command) {
@@ -179,6 +198,7 @@ public class SettingsController {
         ArrayList<Pair<Integer, String>> retval = new ArrayList<Pair<Integer, String>>();
         for (int i : visibleCommands) {
             retval.add(new Pair<Integer, String>(i, getCommandName(i)));
+            Log.e("mando", "id: " + i + " perintah: " + getCommandString(i));
         }
         return retval;
     }

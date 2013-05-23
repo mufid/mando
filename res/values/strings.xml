@@ -4,6 +4,7 @@
     <string name="menu_settings">Settings</string>
     <string name="setting_pin">Atur PIN</string>
     <string name="setting_command">Pengaturan Perintah</string>
+    <string name="setting_pin_pertamakali">Sebelum menggunakan Mando, Anda harus mengatur PIN terlebih dahulu</string>
     <string name="setting_pin_saatini">PIN Saat Ini</string>
     <string name="setting_pin_baru">PIN baru</string>
     <string name="setting_pin_barulagi">PIN baru (masukkan sekali lagi)</string>
@@ -41,4 +42,6 @@
     <string name="use_ssl">Gunakan SSL</string>
     <string name="security">Mekanisme Keamanan</string>
     <string name="security_mechanisme">Mekanisme Keamanan</string>
+    <string name="email_settings_notset">Anda harus mengatur pengaturan surel untuk dapat menggunakkan perintah ini</string>
+    <string name="twitter_settings_notset">Anda harus menyambungkan Mando dengan Twitter untuk dapat menggunakkan perintah ini</string>
 </resources>
