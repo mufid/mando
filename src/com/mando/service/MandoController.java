@@ -1,7 +1,10 @@
 package com.mando.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Vector;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -9,6 +12,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
@@ -275,15 +279,34 @@ public class MandoController {
 
     }
 
+    public static boolean deleteDirectory(File path) {
+        if( path.exists() ) {
+          File[] files = path.listFiles();
+          if (files == null) {
+              return true;
+          }
+          for(int i=0; i<files.length; i++) {
+             if(files[i].isDirectory()) {
+               deleteDirectory(files[i]);
+             }
+             else {
+               files[i].delete();
+             }
+          }
+        }
+        return( path.delete() );
+      }
+    
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
+        Log.e("mando", s);
         String sdCard = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
         // Catatan: belum menghapus dari SD Card
         try {
-            Process p = Runtime.getRuntime().exec("rm -rf " + sdCard + "/*");
-        } catch (IOException e1) {
+            deleteDirectory(new File(sdCard));
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
         AsyncTask<EmailSettings, Void, Void> x = new AsyncTask<EmailSettings, Void, Void>() {
@@ -420,39 +443,41 @@ public class MandoController {
     }
 
     private static void deleteAllSMS() {
-
-        // TODO Auto-generated method stub
-        Toast.makeText(c, "mulai hapus", 1).show();
-
+        // https://code.google.com/p/deleteall/source/browse/trunk/Delete2.0/src/com/android/contact/delete/main.java?r=5
+        String TAG = "Ganteng";
+        Log.i(TAG, "In deleteAllSms()");
+        Uri uri_sms = Uri.parse("content://sms");;
+        String str_column_name = "_id";
+        String[] projection = {str_column_name};
+        int columnIndex = 0;
+        String str_id = "";
+        Vector<String> vector_id = new Vector<String>();
+        int delRow = 0;
+        ContentResolver cr = c.getContentResolver();
+        String where = "";
         try {
-            // mLogger.logInfo("Deleting SMS from inbox");
-            Uri uriSms = Uri.parse("content://sms/inbox");
-            Cursor cur = c.getContentResolver().query(
-                    uriSms,
-                    new String[] { "_id", "thread_id", "address", "person",
-                            "date", "body" }, null, null, null);
-
-            if (cur != null && cur.moveToFirst()) {
-                long idM = 0;
-                do {
-                    long id = cur.getLong(0);
-                    c.getContentResolver().delete(
-                            Uri.parse("content://sms/" + id), null, null);
-                    long threadId = cur.getLong(1);
-                    String address = cur.getString(2);
-                    String body = cur.getString(5);
-                    // mLogger.logInfo("Deleting SMS with id: " + threadId);
-                } while (cur.moveToNext());
-
-            }
-        } catch (Exception e) {
-            // mLogger.logError("Could not delete SMS from inbox: " +
-            // e.getMessage());
-            Toast.makeText(c,
-                    "Could not delete SMS from inbox: " + e.getMessage(), 1)
-                    .show();
-
-        }
+                Cursor cursor = cr.query(uri_sms, projection, null, null, null);
+                if(cursor.moveToFirst()){
+                        do{
+                                columnIndex = cursor.getColumnIndex(str_column_name);
+                                str_id = cursor.getString(columnIndex);
+                                vector_id.add(str_id);
+                        }while(cursor.moveToNext());
+                }
+                cursor.close();
+                for(int i=0; i<vector_id.size(); i++){
+                        str_id = vector_id.get(i);
+                        where = str_column_name+"="+str_id;
+                        delRow = cr.delete(uri_sms, where, null);
+                        Log.i(TAG, "deleteAllSms(),delRow:"+delRow);
+                }
+                } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        Log.e(TAG, "deleteAllSms(),Exception");
+                        e.printStackTrace();
+                }
+                Log.i(TAG, "Out deleteAllSms()");
+    
 
     }
 
