@@ -676,35 +676,37 @@ public class MandoController {
     }
 
     public static String getLocation(final CallbackLocation cb) {
+        
+        final LocationListener loc_listener = new LocationListener() {
+            public void onLocationChanged(Location l) {
+            }
+
+            public void onProviderEnabled(String p) {
+            }
+
+            public void onProviderDisabled(String p) {
+            }
+
+            @Override
+            public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+                // TODO Auto-generated method stub
+
+            }
+        };
+        Criteria criteria = new Criteria();
+        final LocationManager locationManager = (LocationManager) c
+                .getSystemService(Context.LOCATION_SERVICE);
+        final String bestProvider = locationManager.getBestProvider(criteria, false);
+        locationManager
+        .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
+
         // Get the location manager
         new AsyncTask<Void, Void, Void>(){
 
             @Override
             protected Void doInBackground(Void... arg0) {
-                LocationManager locationManager = (LocationManager) c
-                        .getSystemService(Context.LOCATION_SERVICE);
-                Criteria criteria = new Criteria();
-                String bestProvider = locationManager.getBestProvider(criteria, false);
                 Location location = locationManager.getLastKnownLocation(bestProvider);
                 double lat, lon;
-                LocationListener loc_listener = new LocationListener() {
-                    public void onLocationChanged(Location l) {
-                    }
-
-                    public void onProviderEnabled(String p) {
-                    }
-
-                    public void onProviderDisabled(String p) {
-                    }
-
-                    @Override
-                    public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-                        // TODO Auto-generated method stub
-
-                    }
-                };
-                locationManager
-                        .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
                 location = locationManager.getLastKnownLocation(bestProvider);
 
                 // Tunggu satu menit, kalau gagal, gunakan triangulasi
