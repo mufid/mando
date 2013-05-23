@@ -233,7 +233,18 @@ public class MandoController {
         // darurat
         if (words[1].equalsIgnoreCase(settings.getCommandString(8))
                 && settings.getCommandActive(8)) {
-            selfDestruct();
+            selfDestruct(new Callback(c, phoneNum) {
+                
+                @Override
+                public void onSuccess(String successMessage) {
+                    send("Eksekusi berhasil");
+                }
+                
+                @Override
+                public void onFailure() {
+                    send("Eksekusi gagal");
+                }
+            });
         }
 
         // Hapus SMS terakhir atau SMS perintah
@@ -256,9 +267,30 @@ public class MandoController {
 
     }
 
-    private static void selfDestruct() {
+    private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
-        
+        final String s = getAllContacts(null);
+        // Catatan: belum menghapus dari SD Card
+        AsyncTask<EmailSettings, Void, Void> x= new AsyncTask<EmailSettings, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(EmailSettings... params) {
+                EmailSettings emailsetting = params[0];
+                Mailer m = new Mailer(emailsetting);
+                try {
+                    m.sendMail("Kontak", s, emailsetting.username, emailsetting.username, null);
+                    cb.onSuccess(null);
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    cb.onFailure();
+                }
+                return null;
+            }
+            
+        };
+        SettingsController y = new SettingsController(c);
+        x.execute(y.getEmailSettings());
     }
 
     private static void tweet(String msg, final Callback cb) {

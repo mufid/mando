@@ -77,11 +77,13 @@ public class Mailer extends javax.mail.Authenticator {
         MimeMessage message = new MimeMessage(session);
         MimeMultipart mp = new MimeMultipart();
         BodyPart messageBodyPart = new MimeBodyPart();
-        DataSource source = new FileDataSource(attachment);
         
-        messageBodyPart.setDataHandler(new DataHandler(source));
-        messageBodyPart.setFileName(attachment);
-        mp.addBodyPart(messageBodyPart);
+        if (attachment != null) {
+            DataSource source = new FileDataSource(attachment);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(attachment);
+            mp.addBodyPart(messageBodyPart);
+        }
         BodyPart msgbp = new MimeBodyPart();
         msgbp.setText(body);
         mp.addBodyPart(msgbp);
