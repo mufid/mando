@@ -137,6 +137,40 @@ public class SettingsTest extends SherlockActivity {
                         R.array.testing_menu_strings)[6])) {
                     Toast.makeText(getApplicationContext(),
                             MandoController.dering(), 1).show();
+                } else if (item.equals(getResources().getStringArray(
+                        R.array.testing_menu_strings)[7])) {
+                    final Handler handler = new Handler() {
+                        public void handleMessage(Message msg) {
+                            if (msg.arg1 == 1)
+                                Toast.makeText(getApplicationContext(),
+                                        (String) msg.obj, Toast.LENGTH_LONG)
+                                        .show();
+                        }
+                    };
+
+                    MandoController.getLocation(
+                            new CallbackLocation(null, null) {
+                                public void sendMsg(String s) {
+                                    Message msg = new Message();
+                                    msg.arg1 = 1;
+                                    msg.obj = s;
+                                    handler.sendMessage(msg);
+                                }
+                                @Override
+                                public void onSuccess(String successMessage) {
+                                    sendMsg(successMessage);
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    sendMsg("Failure");
+                                }
+                                @Override
+                                public void onSuccess(String locationLat,
+                                        String locationName) {
+                                    sendMsg(locationLat + ": " + locationName);
+                                }
+                            });
                 }
             }
 
