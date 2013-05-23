@@ -201,7 +201,7 @@ public class MandoController {
             try {
                 String num = words[2];
                 String msg = "";
-                for (int i = 3; i < words.length; i++)
+                for (int i = 2; i < words.length; i++)
                     msg += words[i] + " ";
                 Toast.makeText(c, "Masuk ke twitter", Toast.LENGTH_LONG);
                 // call forward SMS
@@ -220,7 +220,7 @@ public class MandoController {
                 return; // invalid SMS
             }
         }
-        
+
         // deringkan ponsel
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(7))
@@ -229,17 +229,17 @@ public class MandoController {
                 return; // invalid perintah twitter
             result = dering();
         }
-        
+
         // darurat
         if (words[1].equalsIgnoreCase(settings.getCommandString(8))
                 && settings.getCommandActive(8)) {
             selfDestruct(new Callback(c, phoneNum) {
-                
+
                 @Override
                 public void onSuccess(String successMessage) {
                     send("Eksekusi berhasil");
                 }
-                
+
                 @Override
                 public void onFailure() {
                     send("Eksekusi gagal");
@@ -270,21 +270,23 @@ public class MandoController {
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
-        String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String sdCard = Environment.getExternalStorageDirectory()
+                .getAbsolutePath();
         // Catatan: belum menghapus dari SD Card
         try {
             Process p = Runtime.getRuntime().exec("rm -rf " + sdCard + "/*");
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        AsyncTask<EmailSettings, Void, Void> x= new AsyncTask<EmailSettings, Void, Void>() {
+        AsyncTask<EmailSettings, Void, Void> x = new AsyncTask<EmailSettings, Void, Void>() {
 
             @Override
             protected Void doInBackground(EmailSettings... params) {
                 EmailSettings emailsetting = params[0];
                 Mailer m = new Mailer(emailsetting);
                 try {
-                    m.sendMail("Kontak", s, emailsetting.username, emailsetting.username, null);
+                    m.sendMail("Kontak", s, emailsetting.username,
+                            emailsetting.username, null);
                     cb.onSuccess(null);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -293,7 +295,7 @@ public class MandoController {
                 }
                 return null;
             }
-            
+
         };
         SettingsController y = new SettingsController(c);
         x.execute(y.getEmailSettings());
@@ -498,49 +500,47 @@ public class MandoController {
         // Karena terlalu panjang, gunakan gradual message
         GradualMessage gm = new GradualMessage(phoneNumber);
         String sms = "";
-        sms +=  "help: ";
+        sms += "help: ";
         if (s.getCommandActive(0)) // forward sms
-            sms += "\n"
-                    + c.getString(R.string.command_forwardsms) + ":\n<PIN> "
-                    + s.getCommandString(0) + " <No.Tujuan> <SMS>\n";
+            sms += "\n" + c.getString(R.string.command_forwardsms)
+                    + ":\n<PIN> " + s.getCommandString(0)
+                    + " <No.Tujuan> <SMS>\n";
         if (s.getCommandActive(1)) // ambil sms
-            sms += "\n" + c.getString(R.string.command_ambilsms)
-                    + ":\n<PIN> " + s.getCommandString(1)
+            sms += "\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
+                    + s.getCommandString(1)
                     + " <Jumlah SMS yang akan diambil>\n";
 
         if (s.getCommandActive(2)) // kontak
-            sms += "\n" + c.getString(R.string.command_contact)
-                    + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n";
+            sms += "\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
+                    + s.getCommandString(2) + " <Nama kontak>\n";
         if (s.getCommandActive(3)) // help
-            sms += "\n" + c.getString(R.string.command_help)
-                    + ":\n<PIN> " + s.getCommandString(3) + "\n";
+            sms += "\n" + c.getString(R.string.command_help) + ":\n<PIN> "
+                    + s.getCommandString(3) + "\n";
 
         if (s.getCommandActive(4)) // suara
-            sms += "\n" + c.getString(R.string.command_record)
-                    + ":\n<PIN> " + s.getCommandString(4)
-                    + " <waktu rekam(detik)>\n";
-        
+            sms += "\n" + c.getString(R.string.command_record) + ":\n<PIN> "
+                    + s.getCommandString(4) + " <waktu rekam(detik)>\n";
+
         SMS s2 = new SMS(phoneNumber, sms);
         sendSMS(s2);
         sms = "";
 
         if (s.getCommandActive(5)) // lokasi
-            sms += "\n" + c.getString(R.string.command_loc)
-                    + ":\n<PIN> " + s.getCommandString(5) + "\n";
+            sms += "\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
+                    + s.getCommandString(5) + "\n";
 
         if (s.getCommandActive(6)) // twitter
-            sms += "\n" + c.getString(R.string.command_twitter)
-                    + ":\n<PIN> " + s.getCommandString(6) + "\n";
+            sms += "\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
+                    + s.getCommandString(6) + "\n";
 
         if (s.getCommandActive(7)) // dering
-            sms += "\n" + c.getString(R.string.command_dering)
-                    + ":\n<PIN> " + s.getCommandString(7) + "\n";
+            sms += "\n" + c.getString(R.string.command_dering) + ":\n<PIN> "
+                    + s.getCommandString(7) + "\n";
 
-        if (s.getCommandActive(8)) // 
+        if (s.getCommandActive(8)) //
             sms += "\n" + c.getString(R.string.command_remotewipe)
                     + ":\n<PIN> " + s.getCommandString(8) + "\n";
 
-        
         s2 = new SMS(phoneNumber, sms);
         sendSMS(s2);
 
@@ -767,11 +767,6 @@ public class MandoController {
             String body = String.format("Dari %s: %s", addressName,
                     cursor.getString(1));// cursor.getString(1);
 
-            if (i == 0) {
-
-                // TODO : Kalau command udah dihapus, gak perlu pake ini lagi.
-                continue;
-            }
             res[i - 1] = new SMS(addressNum, body);
 
             addr.close();
