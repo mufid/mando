@@ -69,9 +69,11 @@ public class SettingsCommandCustom extends SherlockActivity {
         case 2:
         case 3:
         case 5:
+        case 7:
             setContentView(R.layout.activity_settings_commandcustom);
             break;
         case 4:
+        case 8:
             setContentView(R.layout.activity_settings_email);
             Button emailButton = (Button) findViewById(R.id.customcommand_emailsettings);
             emailButton.setOnClickListener(new OnClickListener() {

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.mando.R;
 import com.mando.mailer.EmailServerType;
@@ -197,6 +198,7 @@ public class SettingsController {
         ArrayList<Pair<Integer, String>> retval = new ArrayList<Pair<Integer, String>>();
         for (int i : visibleCommands) {
             retval.add(new Pair<Integer, String>(i, getCommandName(i)));
+            Log.e("mando", "id: " + i + " perintah: " + getCommandString(i));
         }
         return retval;
     }

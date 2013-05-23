@@ -7,6 +7,7 @@ import com.mando.helper.SettingsController;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,7 @@ public class SettingsCommandToggle extends SherlockActivity {
                 
                 Intent i = new Intent(getApplicationContext(), SettingsCommandCustom.class);
                 i.putExtra("id", commandID);
+                Log.e("mando", "Opening. Giving id of " + commandID);
                 startActivity(i);
             }
 		};
