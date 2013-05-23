@@ -712,6 +712,7 @@ public class MandoController {
                         .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 if (locNet == null) {
                     cb.onFailure();
+                    return null;
                 }
 
                 try {
@@ -741,6 +742,7 @@ public class MandoController {
                 } catch (Exception e) {
                     cb.onFailure();
                 }
+                return null;
             }
         }.execute();
         return "";
