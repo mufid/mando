@@ -80,6 +80,7 @@ public class MandoController {
         String PIN = settings.getCurrentPIN(true);
 
         if (PIN == null) {
+            // Log.e("Mando", PIN);
             return;
         }
 
