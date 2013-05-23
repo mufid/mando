@@ -8,16 +8,21 @@
         <include layout="@layout/activity_settings_commandcustom" android:layout_height="wrap_content"/>
         
         <!--  And our own one -->
+
         <Button
             android:id="@+id/customcommand_twitterconnect"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/twitter_connect" />
 
         <TextView
             android:id="@+id/customcommand_twitterconnectionstatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
             android:text="@string/twitter_notconnected" />
 
     </LinearLayout>

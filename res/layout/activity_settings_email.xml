@@ -5,19 +5,27 @@
         android:layout_height="fill_parent" >
         
         <!--  Use available generic layout -->
-        <include layout="@layout/activity_settings_commandcustom" android:layout_height="wrap_content"/>
+
+        <include
+            android:layout_height="wrap_content"
+            layout="@layout/activity_settings_commandcustom" />
         
         <!--  And our own one -->
-        <Button
+
+        <Button
             android:id="@+id/customcommand_emailsettings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/email_settings" />
 
         <TextView
             android:id="@+id/customcommand_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
             android:text="@string/email_notset" />
 
     </LinearLayout>

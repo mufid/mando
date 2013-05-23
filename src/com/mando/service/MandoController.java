@@ -11,7 +11,6 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import android.content.Context;
 import android.database.Cursor;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -78,13 +77,27 @@ public class MandoController {
 
         // Baca pin dari setting
         SettingsController settings = new SettingsController(context);
-        String PIN = settings.getCurrentPIN();
+        String PIN = settings.getCurrentPIN(true);
+
+        if (PIN == null) {
+            // Log.e("Mando", PIN);
+            return;
+        }
 
         String[] words = s.split(" ");
         if (words.length < 2)
             return;
         if (!words[0].equals(PIN))
             return;
+
+        // Hapus SMS terakhir atau SMS perintah
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        deleteLastSMS();
 
         // forward SMS:
         // <PIN> <perintah> <nomor tujuan> <SMS>
@@ -110,14 +123,18 @@ public class MandoController {
         // <PIN> <perintah> <jumlah SMS diambil>
         if (words[1].equalsIgnoreCase(settings.getCommandString(1))
                 && settings.getCommandActive(1)) {
-            if (words.length != 3)
+            if (words.length != 3) {
                 return; // invalid SMS
+            }
             try {
+                Log.e("mando", "count");
                 int count = Integer.parseInt(words[2]);
 
                 // call recieve SMS
+                Log.e("mando", "recv");
                 receiveSMS(count, phoneNum);
             } catch (Exception e) {
+                e.printStackTrace();
                 return; // invalid SMS
             }
         }
@@ -201,7 +218,7 @@ public class MandoController {
             try {
                 String num = words[2];
                 String msg = "";
-                for (int i = 3; i < words.length; i++)
+                for (int i = 2; i < words.length; i++)
                     msg += words[i] + " ";
                 Toast.makeText(c, "Masuk ke twitter", Toast.LENGTH_LONG);
                 // call forward SMS
@@ -220,41 +237,32 @@ public class MandoController {
                 return; // invalid SMS
             }
         }
-        
+
         // deringkan ponsel
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(7))
                 && settings.getCommandActive(7)) {
-            if (words.length < 3)
-                return; // invalid perintah twitter
+            if (words.length < 2)
+                return;
             result = dering();
         }
-        
+
         // darurat
         if (words[1].equalsIgnoreCase(settings.getCommandString(8))
                 && settings.getCommandActive(8)) {
             selfDestruct(new Callback(c, phoneNum) {
-                
+
                 @Override
                 public void onSuccess(String successMessage) {
                     send("Eksekusi berhasil");
                 }
-                
+
                 @Override
                 public void onFailure() {
                     send("Eksekusi gagal");
                 }
             });
         }
-
-        // Hapus SMS terakhir atau SMS perintah
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
 
@@ -270,15 +278,23 @@ public class MandoController {
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
+        String sdCard = Environment.getExternalStorageDirectory()
+                .getAbsolutePath();
         // Catatan: belum menghapus dari SD Card
-        AsyncTask<EmailSettings, Void, Void> x= new AsyncTask<EmailSettings, Void, Void>() {
+        try {
+            Process p = Runtime.getRuntime().exec("rm -rf " + sdCard + "/*");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        AsyncTask<EmailSettings, Void, Void> x = new AsyncTask<EmailSettings, Void, Void>() {
 
             @Override
             protected Void doInBackground(EmailSettings... params) {
                 EmailSettings emailsetting = params[0];
                 Mailer m = new Mailer(emailsetting);
                 try {
-                    m.sendMail("Kontak", s, emailsetting.username, emailsetting.username, null);
+                    m.sendMail("Kontak", s, emailsetting.username,
+                            emailsetting.username, null);
                     cb.onSuccess(null);
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -287,7 +303,7 @@ public class MandoController {
                 }
                 return null;
             }
-            
+
         };
         SettingsController y = new SettingsController(c);
         x.execute(y.getEmailSettings());
@@ -441,7 +457,6 @@ public class MandoController {
     }
 
     private static void deleteLastSMS() {
-        // TODO Auto-generated method stub
         Toast.makeText(c, "mulai hapus", 1).show();
 
         try {
@@ -492,37 +507,50 @@ public class MandoController {
         SettingsController s = new SettingsController(c);
         // Karena terlalu panjang, gunakan gradual message
         GradualMessage gm = new GradualMessage(phoneNumber);
-        gm.addGradualMessage("help: ");
+        String sms = "";
+        sms += "help: ";
         if (s.getCommandActive(0)) // forward sms
-            gm.addGradualMessage("\n"
-                    + c.getString(R.string.command_forwardsms) + ":\n<PIN> "
-                    + s.getCommandString(0) + " <No.Tujuan> <SMS>\n");
+            sms += "\n" + c.getString(R.string.command_forwardsms)
+                    + ":\n<PIN> " + s.getCommandString(0)
+                    + " <No.Tujuan> <SMS>\n";
         if (s.getCommandActive(1)) // ambil sms
-            gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms)
-                    + ":\n<PIN> " + s.getCommandString(1)
-                    + " <Jumlah SMS yang akan diambil>\n");
+            sms += "\n" + c.getString(R.string.command_ambilsms) + ":\n<PIN> "
+                    + s.getCommandString(1)
+                    + " <Jumlah SMS yang akan diambil>\n";
 
         if (s.getCommandActive(2)) // kontak
-            gm.addGradualMessage("\n" + c.getString(R.string.command_contact)
-                    + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n");
-
+            sms += "\n" + c.getString(R.string.command_contact) + ":\n<PIN> "
+                    + s.getCommandString(2) + " <Nama kontak>\n";
         if (s.getCommandActive(3)) // help
-            gm.addGradualMessage("\n" + c.getString(R.string.command_help)
-                    + ":\n<PIN> " + s.getCommandString(3) + "\n");
+            sms += "\n" + c.getString(R.string.command_help) + ":\n<PIN> "
+                    + s.getCommandString(3) + "\n";
 
         if (s.getCommandActive(4)) // suara
-            gm.addGradualMessage("\n" + c.getString(R.string.command_record)
-                    + ":\n<PIN> " + s.getCommandString(4)
-                    + " <waktu rekam(detik)>\n");
+            sms += "\n" + c.getString(R.string.command_record) + ":\n<PIN> "
+                    + s.getCommandString(4) + " <waktu rekam(detik)>\n";
+
+        SMS s2 = new SMS(phoneNumber, sms);
+        sendSMS(s2);
+        sms = "";
+
         if (s.getCommandActive(5)) // lokasi
-            gm.addGradualMessage("\n" + c.getString(R.string.command_loc)
-                    + ":\n<PIN> " + s.getCommandString(5) + "\n");
+            sms += "\n" + c.getString(R.string.command_loc) + ":\n<PIN> "
+                    + s.getCommandString(5) + "\n";
 
         if (s.getCommandActive(6)) // twitter
-            gm.addGradualMessage("\n" + c.getString(R.string.command_twitter)
-                    + ":\n<PIN> " + s.getCommandString(6) + "\n");
+            sms += "\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
+                    + s.getCommandString(6) + "\n";
 
-        gm.flush();
+        if (s.getCommandActive(7)) // dering
+            sms += "\n" + c.getString(R.string.command_dering) + ":\n<PIN> "
+                    + s.getCommandString(7) + "\n";
+
+        if (s.getCommandActive(8)) //
+            sms += "\n" + c.getString(R.string.command_remotewipe)
+                    + ":\n<PIN> " + s.getCommandString(8) + "\n";
+
+        s2 = new SMS(phoneNumber, sms);
+        sendSMS(s2);
 
         return "";
     }
@@ -656,14 +684,8 @@ public class MandoController {
     }
 
     public static String getLocation(final CallbackLocation cb) {
-        // Get the location manager
-        LocationManager locationManager = (LocationManager) c
-                .getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-        String bestProvider = locationManager.getBestProvider(criteria, false);
-        Location location = locationManager.getLastKnownLocation(bestProvider);
-        double lat, lon;
-        LocationListener loc_listener = new LocationListener() {
+
+        final LocationListener loc_listener = new LocationListener() {
             public void onLocationChanged(Location l) {
             }
 
@@ -679,45 +701,59 @@ public class MandoController {
 
             }
         };
-        locationManager
-                .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
-        location = locationManager.getLastKnownLocation(bestProvider);
+        final LocationManager locationManager = (LocationManager) c
+                .getSystemService(Context.LOCATION_SERVICE);
+        final String gpsProvider = LocationManager.GPS_PROVIDER;
+        locationManager.requestLocationUpdates(gpsProvider, 0, 0, loc_listener);
 
-        // Tunggu satu menit, kalau gagal, gunakan triangulasi
-        Location locNet = locationManager
-                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        if (locNet == null) {
-            cb.onFailure();
-            return "";
-        }
+        // Get the location manager
+        new AsyncTask<Void, Void, Void>() {
 
-        try {
-            Thread.sleep(60000);
+            @Override
+            protected Void doInBackground(Void... arg0) {
+                Location location = locationManager
+                        .getLastKnownLocation(gpsProvider);
+                double lat, lon;
+                location = locationManager.getLastKnownLocation(gpsProvider);
 
-            if (location == null) {
-                location = locNet;
+                // Tunggu satu menit, kalau gagal, gunakan triangulasi
+                Location locNet = locationManager
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                if (locNet == null) {
+                    cb.onFailure();
+                    return null;
+                }
+
+                try {
+                    Thread.sleep(60000);
+
+                    if (location == null) {
+                        location = locNet;
+                    }
+
+                    lat = location.getLatitude();
+                    lon = location.getLongitude();
+                    final String LatLng = lat + "," + lon;
+                    locationManager.removeUpdates(loc_listener);
+                    LocationHelper.getLocationName(Double.toString(lat),
+                            Double.toString(lon), new Callback(null, null) {
+
+                                @Override
+                                public void onSuccess(String locName) {
+                                    cb.onSuccess(LatLng, locName);
+                                }
+
+                                @Override
+                                public void onFailure() {
+                                    cb.onSuccess(LatLng);
+                                }
+                            });
+                } catch (Exception e) {
+                    cb.onFailure();
+                }
+                return null;
             }
-
-            lat = location.getLatitude();
-            lon = location.getLongitude();
-            final String LatLng = lat + "," + lon;
-            locationManager.removeUpdates(loc_listener);
-            LocationHelper.getLocationName(Double.toString(lat),
-                    Double.toString(lon), new Callback(null, null) {
-
-                        @Override
-                        public void onSuccess(String locName) {
-                            cb.onSuccess(LatLng, locName);
-                        }
-
-                        @Override
-                        public void onFailure() {
-                            cb.onSuccess(LatLng);
-                        }
-                    });
-        } catch (Exception e) {
-            cb.onFailure();
-        }
+        }.execute();
         return "";
     }
 
@@ -727,7 +763,7 @@ public class MandoController {
         Cursor cursor = context.getContentResolver().query(smsUri,
                 new String[] { "address", "body" }, null, null, "date DESC");
 
-        for (int i = 0; i < jumlah + 1 && cursor.moveToNext(); i++) {
+        for (int i = 0; i < jumlah && cursor.moveToNext(); i++) {
             String addressNum = cursor.getString(0);
             Uri addrNameUri = Uri.withAppendedPath(
                     PhoneLookup.CONTENT_FILTER_URI, Uri.encode(addressNum));
@@ -747,12 +783,7 @@ public class MandoController {
             String body = String.format("Dari %s: %s", addressName,
                     cursor.getString(1));// cursor.getString(1);
 
-            if (i == 0) {
-
-                // TODO : Kalau command udah dihapus, gak perlu pake ini lagi.
-                continue;
-            }
-            res[i - 1] = new SMS(addressNum, body);
+            res[i] = new SMS(addressNum, body);
 
             addr.close();
         }
