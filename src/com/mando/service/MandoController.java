@@ -11,7 +11,6 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 import android.content.Context;
 import android.database.Cursor;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -225,8 +224,8 @@ public class MandoController {
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(7))
                 && settings.getCommandActive(7)) {
-            if (words.length < 3)
-                return; // invalid perintah twitter
+            if (words.length < 2)
+                return;
             result = dering();
         }
 
@@ -676,7 +675,7 @@ public class MandoController {
     }
 
     public static String getLocation(final CallbackLocation cb) {
-        
+
         final LocationListener loc_listener = new LocationListener() {
             public void onLocationChanged(Location l) {
             }
@@ -693,21 +692,20 @@ public class MandoController {
 
             }
         };
-        Criteria criteria = new Criteria();
         final LocationManager locationManager = (LocationManager) c
                 .getSystemService(Context.LOCATION_SERVICE);
-        final String bestProvider = locationManager.getBestProvider(criteria, false);
-        locationManager
-        .requestLocationUpdates(bestProvider, 0, 0, loc_listener);
+        final String gpsProvider = LocationManager.GPS_PROVIDER;
+        locationManager.requestLocationUpdates(gpsProvider, 0, 0, loc_listener);
 
         // Get the location manager
-        new AsyncTask<Void, Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected Void doInBackground(Void... arg0) {
-                Location location = locationManager.getLastKnownLocation(bestProvider);
+                Location location = locationManager
+                        .getLastKnownLocation(gpsProvider);
                 double lat, lon;
-                location = locationManager.getLastKnownLocation(bestProvider);
+                location = locationManager.getLastKnownLocation(gpsProvider);
 
                 // Tunggu satu menit, kalau gagal, gunakan triangulasi
                 Location locNet = locationManager
