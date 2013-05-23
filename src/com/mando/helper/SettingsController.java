@@ -95,7 +95,7 @@ public class SettingsController {
         SettingsHelper.store("command-7", "dering");
         SettingsHelper.store("command-8", "darurat");
 
-        SettingsHelper.store("commandactive", "111010110");
+        SettingsHelper.store("commandactive", "111101010");
     }
     
     public String getFailureMessage(int commandID) {
@@ -106,7 +106,7 @@ public class SettingsController {
                 return c.getString(R.string.email_settings_notset);
             break;
         case 6:
-            if (this.getTwitterUsername().length() == 0)
+            if (this.getTwitterUsername() == null)
                 return c.getString(R.string.email_settings_notset);
             break;            
         default:
@@ -151,7 +151,8 @@ public class SettingsController {
         if (activebin == null)
             initCommand();
         activebin = SettingsHelper.read("command-" + i);
-        return activebin;
+        Log.e("mando", "ID yang didapat: " + i);
+        return emptyStringOrNull(activebin);
     }
 
     public boolean setCommandString(int i, String command) {

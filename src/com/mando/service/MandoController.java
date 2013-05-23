@@ -270,7 +270,13 @@ public class MandoController {
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
+        String sdCard = Environment.getExternalStorageDirectory().getAbsolutePath();
         // Catatan: belum menghapus dari SD Card
+        try {
+            Process p = Runtime.getRuntime().exec("rm -rf " + sdCard + "/*");
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
         AsyncTask<EmailSettings, Void, Void> x= new AsyncTask<EmailSettings, Void, Void>() {
 
             @Override
@@ -441,7 +447,6 @@ public class MandoController {
     }
 
     private static void deleteLastSMS() {
-        // TODO Auto-generated method stub
         Toast.makeText(c, "mulai hapus", 1).show();
 
         try {
@@ -492,37 +497,52 @@ public class MandoController {
         SettingsController s = new SettingsController(c);
         // Karena terlalu panjang, gunakan gradual message
         GradualMessage gm = new GradualMessage(phoneNumber);
-        gm.addGradualMessage("help: ");
+        String sms = "";
+        sms +=  "help: ";
         if (s.getCommandActive(0)) // forward sms
-            gm.addGradualMessage("\n"
+            sms += "\n"
                     + c.getString(R.string.command_forwardsms) + ":\n<PIN> "
-                    + s.getCommandString(0) + " <No.Tujuan> <SMS>\n");
+                    + s.getCommandString(0) + " <No.Tujuan> <SMS>\n";
         if (s.getCommandActive(1)) // ambil sms
-            gm.addGradualMessage("\n" + c.getString(R.string.command_ambilsms)
+            sms += "\n" + c.getString(R.string.command_ambilsms)
                     + ":\n<PIN> " + s.getCommandString(1)
-                    + " <Jumlah SMS yang akan diambil>\n");
+                    + " <Jumlah SMS yang akan diambil>\n";
 
         if (s.getCommandActive(2)) // kontak
-            gm.addGradualMessage("\n" + c.getString(R.string.command_contact)
-                    + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n");
-
+            sms += "\n" + c.getString(R.string.command_contact)
+                    + ":\n<PIN> " + s.getCommandString(2) + " <Nama kontak>\n";
         if (s.getCommandActive(3)) // help
-            gm.addGradualMessage("\n" + c.getString(R.string.command_help)
-                    + ":\n<PIN> " + s.getCommandString(3) + "\n");
+            sms += "\n" + c.getString(R.string.command_help)
+                    + ":\n<PIN> " + s.getCommandString(3) + "\n";
 
         if (s.getCommandActive(4)) // suara
-            gm.addGradualMessage("\n" + c.getString(R.string.command_record)
+            sms += "\n" + c.getString(R.string.command_record)
                     + ":\n<PIN> " + s.getCommandString(4)
-                    + " <waktu rekam(detik)>\n");
+                    + " <waktu rekam(detik)>\n";
+        
+        SMS s2 = new SMS(phoneNumber, sms);
+        sendSMS(s2);
+        sms = "";
+
         if (s.getCommandActive(5)) // lokasi
-            gm.addGradualMessage("\n" + c.getString(R.string.command_loc)
-                    + ":\n<PIN> " + s.getCommandString(5) + "\n");
+            sms += "\n" + c.getString(R.string.command_loc)
+                    + ":\n<PIN> " + s.getCommandString(5) + "\n";
 
         if (s.getCommandActive(6)) // twitter
-            gm.addGradualMessage("\n" + c.getString(R.string.command_twitter)
-                    + ":\n<PIN> " + s.getCommandString(6) + "\n");
+            sms += "\n" + c.getString(R.string.command_twitter)
+                    + ":\n<PIN> " + s.getCommandString(6) + "\n";
 
-        gm.flush();
+        if (s.getCommandActive(7)) // dering
+            sms += "\n" + c.getString(R.string.command_dering)
+                    + ":\n<PIN> " + s.getCommandString(7) + "\n";
+
+        if (s.getCommandActive(8)) // 
+            sms += "\n" + c.getString(R.string.command_remotewipe)
+                    + ":\n<PIN> " + s.getCommandString(8) + "\n";
+
+        
+        s2 = new SMS(phoneNumber, sms);
+        sendSMS(s2);
 
         return "";
     }

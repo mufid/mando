@@ -50,6 +50,7 @@ public class SettingsCommandToggle extends SherlockActivity {
 			    String failureMessage = s.getFailureMessage(i);
 				if (failureMessage != null && newState) {
 				    but.setChecked(false);
+				    isChecked = false;
 				    Toast.makeText(getApplicationContext(), failureMessage, Toast.LENGTH_LONG).show();
 				} else {
 				    s.setCommandActive(i, newState);
