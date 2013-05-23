@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SettingsCommandToggle extends SherlockActivity {
     
@@ -43,10 +44,16 @@ public class SettingsCommandToggle extends SherlockActivity {
 		final LayoutInflater inflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		OnCheckedChangeListener toggleCommand = new OnCheckedChangeListener() {
 			public void onCheckedChanged(CompoundButton but, boolean isChecked) {
-				Button b = (Button) but;
-				Integer i = (Integer) b.getTag();
-				s.setCommandActive(i, !s.getCommandActive(i));
-				//recheckButtonMode(b);
+                Button b = (Button) but;
+			    Integer i = (Integer) b.getTag();
+			    boolean newState = !s.getCommandActive(i);
+			    String failureMessage = s.getFailureMessage(i);
+				if (failureMessage != null && newState) {
+				    but.setChecked(false);
+				    Toast.makeText(getApplicationContext(), failureMessage, Toast.LENGTH_LONG).show();
+				} else {
+				    s.setCommandActive(i, newState);
+				}
 			}
 		};
 		

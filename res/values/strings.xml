@@ -41,4 +41,6 @@
     <string name="use_ssl">Gunakan SSL</string>
     <string name="security">Mekanisme Keamanan</string>
     <string name="security_mechanisme">Mekanisme Keamanan</string>
+    <string name="email_settings_notset">Anda harus mengatur pengaturan surel untuk dapat menggunakkan perintah ini</string>
+    <string name="twitter_settings_notset">Anda harus menyambungkan Mando dengan Twitter untuk dapat menggunakkan perintah ini</string>
 </resources>
