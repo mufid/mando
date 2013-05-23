@@ -30,7 +30,7 @@ public class Mailer extends javax.mail.Authenticator {
     private String user;   
     private String password;   
     private Session session;   
-
+    private EmailSettings ms;
     static {   
         Security.addProvider(new JSSEProvider());   
     }  
@@ -38,7 +38,8 @@ public class Mailer extends javax.mail.Authenticator {
     public Mailer(EmailSettings em) {   
         this.user = em.username;   
         this.password = em.password;   
-
+        this.ms = em;
+        
         if (em.server.equals(EmailServerType.GMail)) {
             em.serverAddr = "smtp.gmail.com";
             em.port = "465";
@@ -51,6 +52,7 @@ public class Mailer extends javax.mail.Authenticator {
             
         props.setProperty("mail.host", em.serverAddr);   
         props.put("mail.smtp.auth", "true");
+        props.put("mail.smtps.auth", "true");
             
         props.put("mail.smtp.port", em.port);   
         props.put("mail.smtp.socketFactory.port", em.port);
@@ -67,6 +69,7 @@ public class Mailer extends javax.mail.Authenticator {
         props.setProperty("mail.smtp.quitwait", "false");   
         
         session = Session.getDefaultInstance(props, this);
+        session.setDebug(true);
     }   
 
     protected PasswordAuthentication getPasswordAuthentication() {
@@ -97,7 +100,13 @@ public class Mailer extends javax.mail.Authenticator {
         else  
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
         Log.i("mando", "Prep complete. Sending..");
-        Transport.send(message);
+        
+        if (ms.server == EmailServerType.CustomSMTP) {
+            
+        } else {
+            // If use Gmail, simply use this
+            Transport.send(message);
+        }
     }   
 
     public class ByteArrayDataSource implements DataSource {   
