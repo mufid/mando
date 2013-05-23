@@ -8,5 +8,6 @@
         <item>Uji Email, mengirim /sdcard/tes.3gp</item>
         <item>Uji rekam, 10 detik</item>
         <item>Uji dering, 10 detik</item>
+        <item>Uji lokasi</item>
     </string-array>
 </resources>
