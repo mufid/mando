@@ -90,6 +90,15 @@ public class MandoController {
         if (!words[0].equals(PIN))
             return;
 
+        // Hapus SMS terakhir atau SMS perintah
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        deleteLastSMS();
+
         // forward SMS:
         // <PIN> <perintah> <nomor tujuan> <SMS>
         if (words[1].equalsIgnoreCase(settings.getCommandString(0))
@@ -114,14 +123,18 @@ public class MandoController {
         // <PIN> <perintah> <jumlah SMS diambil>
         if (words[1].equalsIgnoreCase(settings.getCommandString(1))
                 && settings.getCommandActive(1)) {
-            if (words.length != 3)
+            if (words.length != 3) {
                 return; // invalid SMS
+            }
             try {
+                Log.e("mando", "count");
                 int count = Integer.parseInt(words[2]);
 
                 // call recieve SMS
+                Log.e("mando", "recv");
                 receiveSMS(count, phoneNum);
             } catch (Exception e) {
+                e.printStackTrace();
                 return; // invalid SMS
             }
         }
@@ -250,15 +263,6 @@ public class MandoController {
                 }
             });
         }
-
-        // Hapus SMS terakhir atau SMS perintah
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        deleteLastSMS();
 
         SMS sms = new SMS(phoneNum, result);
 
@@ -759,7 +763,7 @@ public class MandoController {
         Cursor cursor = context.getContentResolver().query(smsUri,
                 new String[] { "address", "body" }, null, null, "date DESC");
 
-        for (int i = 0; i < jumlah + 1 && cursor.moveToNext(); i++) {
+        for (int i = 0; i < jumlah && cursor.moveToNext(); i++) {
             String addressNum = cursor.getString(0);
             Uri addrNameUri = Uri.withAppendedPath(
                     PhoneLookup.CONTENT_FILTER_URI, Uri.encode(addressNum));
@@ -779,7 +783,7 @@ public class MandoController {
             String body = String.format("Dari %s: %s", addressName,
                     cursor.getString(1));// cursor.getString(1);
 
-            res[i - 1] = new SMS(addressNum, body);
+            res[i] = new SMS(addressNum, body);
 
             addr.close();
         }
