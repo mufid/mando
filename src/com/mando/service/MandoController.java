@@ -77,7 +77,11 @@ public class MandoController {
 
         // Baca pin dari setting
         SettingsController settings = new SettingsController(context);
-        String PIN = settings.getCurrentPIN();
+        String PIN = settings.getCurrentPIN(true);
+
+        if (PIN == null) {
+            return;
+        }
 
         String[] words = s.split(" ");
         if (words.length < 2)

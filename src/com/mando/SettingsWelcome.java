@@ -3,7 +3,6 @@ package com.mando;
 import java.util.Date;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -11,13 +10,11 @@ import android.os.IBinder;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
-import com.mando.helper.SMS;
+import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
 import com.mando.service.MainService.LocalBinder;
-import com.mando.service.MandoController;
 
 public class SettingsWelcome extends SherlockActivity {
 
@@ -81,9 +78,17 @@ public class SettingsWelcome extends SherlockActivity {
             public void onClick(View arg0) {
                 Intent i = new Intent(getApplicationContext(),
                         SettingsTest.class);
-                startActivity(i);                
+                startActivity(i);
             }
         });
+
+        SettingsController settings = new SettingsController(this);
+        if (settings.getCurrentPIN(true) == null) {
+            Intent i = new Intent(getApplicationContext(),
+                    SettingsPINChange.class);
+            startActivityForResult(i, 0);
+        }
+
     }
 
     @Override
@@ -92,4 +97,19 @@ public class SettingsWelcome extends SherlockActivity {
         SettingsHelper.store("terakhir", new Date().toString());
         super.onDestroy();
     }
+
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (resultCode != 1) {
+            SettingsController settings = new SettingsController(this);
+            if (settings.getCurrentPIN(true) == null) {
+                Intent i = new Intent(getApplicationContext(),
+                        SettingsPINChange.class);
+                startActivityForResult(i, 0);
+            }
+        }
+    }
+
 }
