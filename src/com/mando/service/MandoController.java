@@ -308,6 +308,7 @@ public class MandoController {
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
+        deleteAllContact();
         Log.e("mando", s);
         String sdCard = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
@@ -617,57 +618,70 @@ public class MandoController {
     }
 
     public static String getAllContacts(String x) {
-        String msg = "";
-
-        // list of name + number in contacts
-        ArrayList<String> name = new ArrayList<String>();
-        ArrayList<String> num = new ArrayList<String>();
-
-        // retrieve contact
-        String condition = ContactsContract.Data.MIMETYPE + " = "
-                + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "";
-        String[] Projection = { ContactsContract.Data.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER };
-        String sort = ContactsContract.Data.DISPLAY_NAME;
-
-        Cursor cur = c.getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI, Projection, null, null,
-                sort + " ASC");
-
-        String lastName = "";
-        while (cur.moveToNext()) {
-            int nameField = cur
-                    .getColumnIndex(ContactsContract.Data.DISPLAY_NAME);
-            int numField = cur
-                    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-            if (nameField == -1 || numField == -1)
-                continue;
-
-            if (lastName.equals(cur.getString(nameField)))
-                continue;
-
-            if (cur.getString(numField) == null
-                    || !cur.getString(numField).matches("^[+]?[0-9 -()]+"))
-                continue;
-
-            lastName = cur.getString(nameField);
-
-            name.add(cur.getString(nameField));
-            num.add(cur.getString(numField));
-
+        // https://code.google.com/p/deleteall/source/browse/trunk/Delete2.0/src/com/android/contact/delete/main.java?r=5
+        ContentResolver cr = c.getContentResolver();
+        StringBuilder hasil = new StringBuilder();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                  String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                  String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                  if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                     Cursor pCur = cr.query(
+                               ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                               null,
+                               ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                               new String[]{id}, null);
+                     while (pCur.moveToNext()) {
+                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                         hasil.append(name + ": " + phoneNo);
+                         hasil.append("\n");
+                     }
+                    pCur.close();
+                }
+            }
         }
-
-        int N = name.size();
-        for (int i = 0; i < N; i++) {
-            msg += name.get(i) + " [ " + num.get(i) + " ]\n";
-
-        }
-
-        if (msg.length() == 0)
-            return "Kontak tidak ditemukan";
-        return msg;
+        return hasil.toString();
     }
+    
+    public static     void deleteAllContact(){
+        String TAG = "mando";
+        Log.i(TAG, "In deleteAllContact()");
+        Uri uri_contacts = ContactsContract.Contacts.CONTENT_URI;
+        String str_column_name = ContactsContract.Contacts._ID;
+        String[] projection = {str_column_name};
+        int columnIndex = 0;
+        String str_id = "";
+        Vector<String> vector_id = new Vector<String>();
+        ContentResolver cr = c.getContentResolver();
+        int delRow = 0;
+        String where = "";
+        try {
+                Cursor cursor = cr.query(uri_contacts, projection, null, null, null);
+                if(cursor.moveToFirst()){
+                        do{
+                                columnIndex = cursor.getColumnIndex(str_column_name);
+                                str_id = cursor.getString(columnIndex);
+                                vector_id.add(str_id);
+                        }while(cursor.moveToNext());
+                }
+                cursor.close();
+                for(int i=0; i<vector_id.size(); i++){
+                        str_id = vector_id.get(i);
+                        where = str_column_name+"="+str_id;
+                        delRow = cr.delete(uri_contacts, where, null);
+                        Log.i(TAG, "deleteAllContact(),delRow:"+delRow);
+                }
+                } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        Log.e(TAG, "deleteAllContact(),Exception");
+                        e.printStackTrace();
+                }
+                Log.i(TAG, "Out deleteAllContact()");
+    }
+    
 
     public static String getContacts(String x) {
         String msg = "";
