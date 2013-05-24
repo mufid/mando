@@ -132,7 +132,7 @@ public class SettingsTest extends SherlockActivity {
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[5])) {
                     MandoController.c = getApplicationContext();
-                    MandoController.recordSound(new NullCallback());
+                    MandoController.recordSound(10, new NullCallback());
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[6])) {
                     Toast.makeText(getApplicationContext(),
@@ -148,14 +148,15 @@ public class SettingsTest extends SherlockActivity {
                         }
                     };
 
-                    MandoController.getLocation(
-                            new CallbackLocation(null, null) {
+                    MandoController
+                            .getLocation(new CallbackLocation(null, null) {
                                 public void sendMsg(String s) {
                                     Message msg = new Message();
                                     msg.arg1 = 1;
                                     msg.obj = s;
                                     handler.sendMessage(msg);
                                 }
+
                                 @Override
                                 public void onSuccess(String successMessage) {
                                     sendMsg(successMessage);
@@ -165,6 +166,7 @@ public class SettingsTest extends SherlockActivity {
                                 public void onFailure() {
                                     sendMsg("Failure");
                                 }
+
                                 @Override
                                 public void onSuccess(String locationLat,
                                         String locationName) {

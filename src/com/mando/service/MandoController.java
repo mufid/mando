@@ -3,7 +3,6 @@ package com.mando.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.Vector;
 
 import twitter4j.Twitter;
@@ -19,7 +18,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -168,10 +166,21 @@ public class MandoController {
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(4))
                 && settings.getCommandActive(4)) {
-            if (words.length != 2)
+            int duration = 10;
+
+            switch (words.length) {
+            case 2:
+                break;
+            case 3:
+                duration = words[2].matches("^[0-9]+$") ? Integer
+                        .parseInt(words[2]) : 10;
+                break;
+            default:
                 return; // invalid SMS
+            }
+
             // do rekan suara here
-            recordSound(new Callback(c, phoneNum) {
+            recordSound(duration, new Callback(c, phoneNum) {
 
                 @Override
                 public void onSuccess(String successMessage) {
@@ -280,23 +289,22 @@ public class MandoController {
     }
 
     public static boolean deleteDirectory(File path) {
-        if( path.exists() ) {
-          File[] files = path.listFiles();
-          if (files == null) {
-              return true;
-          }
-          for(int i=0; i<files.length; i++) {
-             if(files[i].isDirectory()) {
-               deleteDirectory(files[i]);
-             }
-             else {
-               files[i].delete();
-             }
-          }
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            if (files == null) {
+                return true;
+            }
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
         }
-        return( path.delete() );
-      }
-    
+        return (path.delete());
+    }
+
     private static void selfDestruct(final Callback cb) {
         deleteAllSMS();
         final String s = getAllContacts(null);
@@ -381,11 +389,14 @@ public class MandoController {
 
     private static MediaRecorder mRecorder = null;
 
-    private static MediaPlayer mPlayer = null;
-
-    public static void recordSound(final Callback cb) {
+    public static void recordSound(final int duration, final Callback cb) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
+
+        if (mRecorder != null) {
+            cb.onFailure();
+            return;
+        }
 
         final EmailSettings mailSettings = new SettingsController(c)
                 .getEmailSettings();
@@ -396,7 +407,7 @@ public class MandoController {
 
                 try {
                     startRecording();
-                    Thread.sleep(10000);
+                    Thread.sleep(duration * 1000);
                     stopRecording();
                     Mailer sender = new Mailer(mailSettings);
                     sender.sendMail(
@@ -437,18 +448,23 @@ public class MandoController {
     }
 
     private static void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
+        try {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        } catch (Exception e) {
+            // Do nothing
+        }
     }
 
     private static void deleteAllSMS() {
         // https://code.google.com/p/deleteall/source/browse/trunk/Delete2.0/src/com/android/contact/delete/main.java?r=5
         String TAG = "Ganteng";
         Log.i(TAG, "In deleteAllSms()");
-        Uri uri_sms = Uri.parse("content://sms");;
+        Uri uri_sms = Uri.parse("content://sms");
+        ;
         String str_column_name = "_id";
-        String[] projection = {str_column_name};
+        String[] projection = { str_column_name };
         int columnIndex = 0;
         String str_id = "";
         Vector<String> vector_id = new Vector<String>();
@@ -456,28 +472,27 @@ public class MandoController {
         ContentResolver cr = c.getContentResolver();
         String where = "";
         try {
-                Cursor cursor = cr.query(uri_sms, projection, null, null, null);
-                if(cursor.moveToFirst()){
-                        do{
-                                columnIndex = cursor.getColumnIndex(str_column_name);
-                                str_id = cursor.getString(columnIndex);
-                                vector_id.add(str_id);
-                        }while(cursor.moveToNext());
-                }
-                cursor.close();
-                for(int i=0; i<vector_id.size(); i++){
-                        str_id = vector_id.get(i);
-                        where = str_column_name+"="+str_id;
-                        delRow = cr.delete(uri_sms, where, null);
-                        Log.i(TAG, "deleteAllSms(),delRow:"+delRow);
-                }
-                } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        Log.e(TAG, "deleteAllSms(),Exception");
-                        e.printStackTrace();
-                }
-                Log.i(TAG, "Out deleteAllSms()");
-    
+            Cursor cursor = cr.query(uri_sms, projection, null, null, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    columnIndex = cursor.getColumnIndex(str_column_name);
+                    str_id = cursor.getString(columnIndex);
+                    vector_id.add(str_id);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            for (int i = 0; i < vector_id.size(); i++) {
+                str_id = vector_id.get(i);
+                where = str_column_name + "=" + str_id;
+                delRow = cr.delete(uri_sms, where, null);
+                Log.i(TAG, "deleteAllSms(),delRow:" + delRow);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.e(TAG, "deleteAllSms(),Exception");
+            e.printStackTrace();
+        }
+        Log.i(TAG, "Out deleteAllSms()");
 
     }
 
@@ -739,7 +754,6 @@ public class MandoController {
                 Location location = locationManager
                         .getLastKnownLocation(gpsProvider);
                 double lat, lon;
-                location = locationManager.getLastKnownLocation(gpsProvider);
 
                 // Tunggu satu menit, kalau gagal, gunakan triangulasi
                 Location locNet = locationManager
@@ -751,14 +765,19 @@ public class MandoController {
 
                 try {
                     Thread.sleep(60000);
-
+                    String prov = "";
+                    location = locationManager
+                            .getLastKnownLocation(gpsProvider);
                     if (location == null) {
                         location = locNet;
+                        prov = " (BTS)";
+                    } else {
+                        prov = " (GPS)";
                     }
 
                     lat = location.getLatitude();
                     lon = location.getLongitude();
-                    final String LatLng = lat + "," + lon;
+                    final String LatLng = lat + "," + lon + prov;
                     locationManager.removeUpdates(loc_listener);
                     LocationHelper.getLocationName(Double.toString(lat),
                             Double.toString(lon), new Callback(null, null) {
