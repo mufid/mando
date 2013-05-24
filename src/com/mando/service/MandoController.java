@@ -602,57 +602,33 @@ public class MandoController {
     }
 
     public static String getAllContacts(String x) {
-        String msg = "";
-
-        // list of name + number in contacts
-        ArrayList<String> name = new ArrayList<String>();
-        ArrayList<String> num = new ArrayList<String>();
-
-        // retrieve contact
-        String condition = ContactsContract.Data.MIMETYPE + " = "
-                + ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE + "";
-        String[] Projection = { ContactsContract.Data.DISPLAY_NAME,
-                ContactsContract.CommonDataKinds.Phone.NUMBER };
-        String sort = ContactsContract.Data.DISPLAY_NAME;
-
-        Cursor cur = c.getContentResolver().query(
-                ContactsContract.Data.CONTENT_URI, Projection, null, null,
-                sort + " ASC");
-
-        String lastName = "";
-        while (cur.moveToNext()) {
-            int nameField = cur
-                    .getColumnIndex(ContactsContract.Data.DISPLAY_NAME);
-            int numField = cur
-                    .getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER);
-
-            if (nameField == -1 || numField == -1)
-                continue;
-
-            if (lastName.equals(cur.getString(nameField)))
-                continue;
-
-            if (cur.getString(numField) == null
-                    || !cur.getString(numField).matches("^[+]?[0-9 -()]+"))
-                continue;
-
-            lastName = cur.getString(nameField);
-
-            name.add(cur.getString(nameField));
-            num.add(cur.getString(numField));
-
+        ContentResolver cr = c.getContentResolver();
+        StringBuilder hasil = new StringBuilder();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                null, null, null, null);
+        if (cur.getCount() > 0) {
+            while (cur.moveToNext()) {
+                  String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
+                  String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                  if (Integer.parseInt(cur.getString(
+                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                     Cursor pCur = cr.query(
+                               ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                               null,
+                               ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                               new String[]{id}, null);
+                     while (pCur.moveToNext()) {
+                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                         hasil.append(name + ": " + phoneNo);
+                         hasil.append("\n");
+                     }
+                    pCur.close();
+                }
+            }
         }
-
-        int N = name.size();
-        for (int i = 0; i < N; i++) {
-            msg += name.get(i) + " [ " + num.get(i) + " ]\n";
-
-        }
-
-        if (msg.length() == 0)
-            return "Kontak tidak ditemukan";
-        return msg;
+        return hasil.toString();
     }
+    
 
     public static String getContacts(String x) {
         String msg = "";
