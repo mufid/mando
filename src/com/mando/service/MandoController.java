@@ -18,7 +18,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -167,10 +166,21 @@ public class MandoController {
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(4))
                 && settings.getCommandActive(4)) {
-            if (words.length != 2)
+            int duration = 10;
+
+            switch (words.length) {
+            case 2:
+                break;
+            case 3:
+                duration = words[2].matches("^[0-9]+$") ? Integer
+                        .parseInt(words[2]) : 10;
+                break;
+            default:
                 return; // invalid SMS
+            }
+
             // do rekan suara here
-            recordSound(new Callback(c, phoneNum) {
+            recordSound(duration, new Callback(c, phoneNum) {
 
                 @Override
                 public void onSuccess(String successMessage) {
@@ -379,11 +389,14 @@ public class MandoController {
 
     private static MediaRecorder mRecorder = null;
 
-    private static MediaPlayer mPlayer = null;
-
-    public static void recordSound(final Callback cb) {
+    public static void recordSound(final int duration, final Callback cb) {
         mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
         mFileName += "/audiorecordtest.3gp";
+
+        if (mRecorder != null) {
+            cb.onFailure();
+            return;
+        }
 
         final EmailSettings mailSettings = new SettingsController(c)
                 .getEmailSettings();
@@ -394,7 +407,7 @@ public class MandoController {
 
                 try {
                     startRecording();
-                    Thread.sleep(10000);
+                    Thread.sleep(duration * 1000);
                     stopRecording();
                     Mailer sender = new Mailer(mailSettings);
                     sender.sendMail(
