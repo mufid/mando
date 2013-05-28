@@ -22,7 +22,7 @@
     <string name="command_contact">Meminta Kontak</string>
     <string name="command_help">Meminta Bantuan</string>
     <string name="command_record">Merekam Suara</string>
-    <string name="command_loc">Meminta lokasi</string>
+    <string name="command_loc">Meminta Lokasi</string>
     <string name="command_twitter">Mengirim Tweet</string>
     <string name="command_dering">Menderingkan Ponsel</string>
     <string name="command_remotewipe">Remote Wipe</string>
@@ -36,12 +36,12 @@
     <string name="username">Nama pengguna</string>
     <string name="password">Kata sandi</string>
     <string name="email_settings">Pengaturan Surel</string>
-    <string name="email_notset">Server surel belum diatur. Untuk dapat menggunakkan perintah ini, Anda harus mengatur server surel terlebih dahulu.</string>
+    <string name="email_notset">Server surel belum diatur. Untuk dapat menggunakan perintah ini, Anda harus mengatur server surel terlebih dahulu.</string>
     <string name="serveraddr">Alamat server</string>
     <string name="port">Port</string>
     <string name="use_ssl">Gunakan SSL</string>
     <string name="security">Mekanisme Keamanan</string>
     <string name="security_mechanisme">Mekanisme Keamanan</string>
-    <string name="email_settings_notset">Anda harus mengatur pengaturan surel untuk dapat menggunakkan perintah ini</string>
-    <string name="twitter_settings_notset">Anda harus menyambungkan Mando dengan Twitter untuk dapat menggunakkan perintah ini</string>
+    <string name="email_settings_notset">Anda harus mengatur pengaturan surel untuk dapat menggunakan perintah ini</string>
+    <string name="twitter_settings_notset">Anda harus menyambungkan Mando dengan Twitter untuk dapat menggunakan perintah ini</string>
 </resources>
