@@ -136,7 +136,7 @@ public class SettingsTest extends SherlockActivity {
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[6])) {
                     Toast.makeText(getApplicationContext(),
-                            MandoController.dering(), 1).show();
+                            MandoController.dering(10), 1).show();
                 } else if (item.equals(getResources().getStringArray(
                         R.array.testing_menu_strings)[7])) {
                     final Handler handler = new Handler() {

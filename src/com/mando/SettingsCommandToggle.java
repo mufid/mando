@@ -32,6 +32,11 @@ public class SettingsCommandToggle extends SherlockActivity {
             b.setChecked(false);
             // but.setText(R.string.aktif_tidak);
         }
+
+        // TODO : Masih belum yakin, tolong dicek lagi.
+        if (s.getFailureMessage(i) != null) {
+            b.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -90,6 +95,13 @@ public class SettingsCommandToggle extends SherlockActivity {
             tv.setOnClickListener(customcommand);
         }
 
+    }
+
+    // TODO : Masih belum yakin, tolong dicek lagi.
+    protected void onRestart() {
+        super.onRestart();
+
+        onCreate(null);
     }
 
     @Override

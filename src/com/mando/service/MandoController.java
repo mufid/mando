@@ -255,9 +255,20 @@ public class MandoController {
         // <PIN> <perintah>
         if (words[1].equalsIgnoreCase(settings.getCommandString(7))
                 && settings.getCommandActive(7)) {
-            if (words.length < 2)
-                return;
-            result = dering();
+            int duration = 10;
+
+            switch (words.length) {
+            case 2:
+                break;
+            case 3:
+                duration = words[2].matches("^[0-9]+$") ? Integer
+                        .parseInt(words[2]) : 10;
+                break;
+            default:
+                return; // invalid SMS
+            }
+
+            result = dering(duration);
         }
 
         // darurat
@@ -621,37 +632,43 @@ public class MandoController {
         // https://code.google.com/p/deleteall/source/browse/trunk/Delete2.0/src/com/android/contact/delete/main.java?r=5
         ContentResolver cr = c.getContentResolver();
         StringBuilder hasil = new StringBuilder();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                null, null, null, null);
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
+                null, null, null);
         if (cur.getCount() > 0) {
             while (cur.moveToNext()) {
-                  String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-                  String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                  if (Integer.parseInt(cur.getString(
-                        cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                     Cursor pCur = cr.query(
-                               ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                               null,
-                               ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-                               new String[]{id}, null);
-                     while (pCur.moveToNext()) {
-                         String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                         hasil.append(name + ": " + phoneNo);
-                         hasil.append("\n");
-                     }
+                String id = cur.getString(cur
+                        .getColumnIndex(ContactsContract.Contacts._ID));
+                String name = cur
+                        .getString(cur
+                                .getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                if (Integer
+                        .parseInt(cur.getString(cur
+                                .getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                    Cursor pCur = cr.query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+                                    + " = ?", new String[] { id }, null);
+                    while (pCur.moveToNext()) {
+                        String phoneNo = pCur
+                                .getString(pCur
+                                        .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                        hasil.append(name + ": " + phoneNo);
+                        hasil.append("\n");
+                    }
                     pCur.close();
                 }
             }
         }
         return hasil.toString();
     }
-    
-    public static     void deleteAllContact(){
+
+    public static void deleteAllContact() {
         String TAG = "mando";
         Log.i(TAG, "In deleteAllContact()");
         Uri uri_contacts = ContactsContract.Contacts.CONTENT_URI;
         String str_column_name = ContactsContract.Contacts._ID;
-        String[] projection = {str_column_name};
+        String[] projection = { str_column_name };
         int columnIndex = 0;
         String str_id = "";
         Vector<String> vector_id = new Vector<String>();
@@ -659,29 +676,29 @@ public class MandoController {
         int delRow = 0;
         String where = "";
         try {
-                Cursor cursor = cr.query(uri_contacts, projection, null, null, null);
-                if(cursor.moveToFirst()){
-                        do{
-                                columnIndex = cursor.getColumnIndex(str_column_name);
-                                str_id = cursor.getString(columnIndex);
-                                vector_id.add(str_id);
-                        }while(cursor.moveToNext());
-                }
-                cursor.close();
-                for(int i=0; i<vector_id.size(); i++){
-                        str_id = vector_id.get(i);
-                        where = str_column_name+"="+str_id;
-                        delRow = cr.delete(uri_contacts, where, null);
-                        Log.i(TAG, "deleteAllContact(),delRow:"+delRow);
-                }
-                } catch (Exception e) {
-                        // TODO Auto-generated catch block
-                        Log.e(TAG, "deleteAllContact(),Exception");
-                        e.printStackTrace();
-                }
-                Log.i(TAG, "Out deleteAllContact()");
+            Cursor cursor = cr
+                    .query(uri_contacts, projection, null, null, null);
+            if (cursor.moveToFirst()) {
+                do {
+                    columnIndex = cursor.getColumnIndex(str_column_name);
+                    str_id = cursor.getString(columnIndex);
+                    vector_id.add(str_id);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            for (int i = 0; i < vector_id.size(); i++) {
+                str_id = vector_id.get(i);
+                where = str_column_name + "=" + str_id;
+                delRow = cr.delete(uri_contacts, where, null);
+                Log.i(TAG, "deleteAllContact(),delRow:" + delRow);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.e(TAG, "deleteAllContact(),Exception");
+            e.printStackTrace();
+        }
+        Log.i(TAG, "Out deleteAllContact()");
     }
-    
 
     public static String getContacts(String x) {
         String msg = "";
@@ -855,7 +872,7 @@ public class MandoController {
         return "";
     }
 
-    public static String dering() {
+    public static String dering(final int duration) {
 
         Uri ringtoneUri = RingtoneManager
                 .getDefaultUri(RingtoneManager.TYPE_RINGTONE);
@@ -878,7 +895,7 @@ public class MandoController {
                             0);
 
                     ringtone.play();
-                    Thread.sleep(10000);
+                    Thread.sleep(duration * 1000);
                     ringtone.stop();
 
                     audio.setRingerMode(currentMode);
