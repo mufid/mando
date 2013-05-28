@@ -35,6 +35,7 @@ public class SettingsCommandToggle extends SherlockActivity {
 
         // TODO : Masih belum yakin, tolong dicek lagi.
         if (s.getFailureMessage(i) != null) {
+            b.setChecked(false);
             b.setVisibility(View.INVISIBLE);
         }
     }
