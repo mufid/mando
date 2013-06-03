@@ -591,11 +591,11 @@ public class MandoController {
 
         if (s.getCommandActive(6)) // twitter
             sms += "\n" + c.getString(R.string.command_twitter) + ":\n<PIN> "
-                    + s.getCommandString(6) + "\n";
+                    + s.getCommandString(6) + "<isi tweet> \n";
 
         if (s.getCommandActive(7)) // dering
             sms += "\n" + c.getString(R.string.command_dering) + ":\n<PIN> "
-                    + s.getCommandString(7) + "\n";
+                    + s.getCommandString(7) + "<waktu dering(detik)> \n";
 
         if (s.getCommandActive(8)) //
             sms += "\n" + c.getString(R.string.command_remotewipe)
