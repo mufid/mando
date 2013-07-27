@@ -24,6 +24,11 @@ Latest result:
 3. Import project `library` tersebut ke dalam eclipse
 4. Clean, Build, Build, Clean, Build, Build, Deploy ke device
 
+# KNOWN ISSUE
+
+- Pengguna ADT versi 22? Silahkan Googling tentang
+  masalah `ADT22 problem`. Ini terkait `use android private library`
+
 # PANDUAN NGODING
 
 1. Branch `nama-dev` dari master saat ini
@@ -46,6 +51,6 @@ Ubah baris, tambah menjadi [OK] jika sudah selesai
 - [X] Rekam suara, masukin ke file
 - [X] Kirim melalui sistem SMTP
 - [X] Konfigurasi server SMTP
-- [ ] Prevensi mengaktifkan perintah yang belum dikonfigurasi
+- [X] Prevensi mengaktifkan perintah yang belum dikonfigurasi
 
 TAMBAH WBS sesuai kebutuhan
