@@ -15,6 +15,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.mando.helper.SettingsController;
 import com.mando.mailer.EmailServerType;
 import com.mando.mailer.EmailSettings;
+import com.mando.R;
 
 public class SettingsEmail extends SherlockActivity implements OnNavigationListener {
     

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mando"
-    android:versionCode="1"
-    android:versionName="1.0" >
-	
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.INTERNET" />
+    android:versionCode="2"
+    android:versionName="1.1" >
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     
     <uses-sdk
         android:minSdkVersion="9"
@@ -35,21 +35,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mando.activities.SettingsPINChange"></activity>
-        <activity andcom.mando.activities.SettingsTestettingsTest"></activity>
-        <activity android:name="com.mando.activities.SettingsCommandToggle"></activity>
-        <acom.mando.activities.SettingsCommandCustom.SettingsCommandCustom"></activity>
-        <activity andcom.mando.activities.SettingsTwitterLoginwitterLogin"><com.mando.activities.SettingsEmailtivity android:name="com.mando.SettingsEmail" android:uiOptions="splitActionBarWhenNarrow"></activity>
+        <activity android:name=".activities.SettingsPINChange"></activity>
+        <activity android:name=".activities.SettingsTestettingsTest"></activity>
+        <activity android:name=".activities.SettingsCommandToggle"></activity>
+        <activity android:name=".activities.SettingsCommandCustom"></activity>
+        <activity android:name=".activities.SettingsTwitterLoginwitterLogin"></activity>
 
-	    <service android:name=".service.MainService"
-	        android:enabled="true">
-		</service>
+        <service android:name=".service.MainService"
+            android:enabled="true">
+        </service>
 
         <receiver android:name=".service.MandoSMSReceiver">
-		    <intent-filter>
-		        <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-		    </intent-filter>
-		</receiver>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
     </application>
 
     

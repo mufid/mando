@@ -10,6 +10,8 @@ import android.webkit.WebViewClient;
 
 import com.actionbarsherlock.app.SherlockActivity;
 
+import com.mando.R;
+
 public class SettingsTwitterLogin extends SherlockActivity {
     // Constants
     public static final String TWITTER_TOKEN = "twittertoken";

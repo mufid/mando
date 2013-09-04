@@ -16,6 +16,8 @@ import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
 import com.mando.service.MainService.LocalBinder;
 
+import com.mando.R;
+
 public class SettingsWelcome extends SherlockActivity {
 
     private ServiceConnection mConnection = new ServiceConnection() {

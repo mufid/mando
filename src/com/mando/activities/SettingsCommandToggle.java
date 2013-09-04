@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.SettingsController;
+import com.mando.R;
 
 public class SettingsCommandToggle extends SherlockActivity {
 
