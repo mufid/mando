@@ -27,7 +27,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.mando.SettingsWelcome"
+            android:name="com.mando.activities.SettingsWelcome"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,12 +35,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mando.SettingsPINChange"></activity>
-        <activity android:name="com.mando.SettingsTest"></activity>
-        <activity android:name="com.mando.SettingsCommandToggle"></activity>
-        <activity android:name="com.mando.SettingsCommandCustom"></activity>
-        <activity android:name="com.mando.SettingsTwitterLogin"></activity>
-        <activity android:name="com.mando.SettingsEmail" android:uiOptions="splitActionBarWhenNarrow"></activity>
+        <activity android:name="com.mando.activities.SettingsPINChange"></activity>
+        <activity andcom.mando.activities.SettingsTestettingsTest"></activity>
+        <activity android:name="com.mando.activities.SettingsCommandToggle"></activity>
+        <acom.mando.activities.SettingsCommandCustom.SettingsCommandCustom"></activity>
+        <activity andcom.mando.activities.SettingsTwitterLoginwitterLogin"><com.mando.activities.SettingsEmailtivity android:name="com.mando.SettingsEmail" android:uiOptions="splitActionBarWhenNarrow"></activity>
 
 	    <service android:name=".service.MainService"
 	        android:enabled="true">

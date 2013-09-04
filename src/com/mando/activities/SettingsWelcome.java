@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import java.util.Date;
 

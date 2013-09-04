@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;

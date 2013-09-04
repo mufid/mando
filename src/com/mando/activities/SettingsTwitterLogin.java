@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
