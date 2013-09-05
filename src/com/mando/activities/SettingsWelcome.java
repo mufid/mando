@@ -2,6 +2,7 @@ package com.mando.activities;
 
 import java.util.Date;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -14,32 +15,13 @@ import android.widget.Button;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.SettingsController;
 import com.mando.helper.SettingsHelper;
-import com.mando.service.MainService.LocalBinder;
 
 import com.mando.R;
 
-public class SettingsWelcome extends SherlockActivity {
+public class SettingsWelcome extends Activity {
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get
-            // LocalService instance
-            LocalBinder binder = (LocalBinder) service;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-
-        }
-
-    };
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTheme(R.style.Theme_Sherlock_Light);
         setContentView(R.layout.activity_settings_welcome);
 
         // Service start

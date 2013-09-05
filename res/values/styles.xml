@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -15,6 +15,7 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <item name="android:buttonStyle">@style/MButton</item>
     </style>
     <style name="buttontoggle" parent="@android:style/Widget.CompoundButton">
         <item name="android:padding">20dp</item>
@@ -25,5 +26,16 @@
     <style name="nonactivebutton" parent="buttontoggle">
         <item name="android:background">#33B5E5</item>
         <item name="android:text">@string/aktif_tidak</item>
+    </style>
+    <style name="MButton" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/button_choco</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#3B321A</item>
+    </style>
+    <style name="MWhiteBackground">
+        
     </style>
 </resources>
