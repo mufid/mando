@@ -36,10 +36,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.SettingsPINChange"></activity>
-        <activity android:name=".activities.SettingsTestettingsTest"></activity>
+        <activity android:name=".activities.SettingsEmail"></activity>
+        <activity android:name=".activities.SettingsTest"></activity>
         <activity android:name=".activities.SettingsCommandToggle"></activity>
         <activity android:name=".activities.SettingsCommandCustom"></activity>
-        <activity android:name=".activities.SettingsTwitterLoginwitterLogin"></activity>
+        <activity android:name=".activities.SettingsTwitterLogin"></activity>
 
         <service android:name=".service.MainService"
             android:enabled="true">
