@@ -8,7 +8,7 @@ public class SettingsHelper {
 	private static String PREFERENCES_NAME = "MandoSettings";
 	
     // If in Debug, centang this
-    private static boolean isDebug = true;
+    private static boolean isDebug = false;
     
     public static void init(Context c) {
         context = c;

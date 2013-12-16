@@ -233,7 +233,8 @@ public class MandoController {
                 String msg = "";
                 for (int i = 2; i < words.length; i++)
                     msg += words[i] + " ";
-                Toast.makeText(c, "Masuk ke twitter", Toast.LENGTH_LONG);
+                if (SettingsHelper.isDebug())
+                    Toast.makeText(c, "Masuk ke twitter", Toast.LENGTH_LONG);
                 // call forward SMS
                 tweet(msg, new Callback(c, phoneNum) {
                     @Override
@@ -498,7 +499,8 @@ public class MandoController {
     }
 
     private static void deleteLastSMS() {
-        Toast.makeText(c, "mulai hapus", 1).show();
+        if (SettingsHelper.isDebug())
+            Toast.makeText(c, "mulai hapus", 1).show();
 
         try {
             // mLogger.logInfo("Deleting SMS from inbox");
@@ -521,7 +523,8 @@ public class MandoController {
                 } while (cur.moveToNext());
                 c.getContentResolver().delete(
                         Uri.parse("content://sms/" + idM), null, null);
-                Toast.makeText(c, "Hapus SMS id " + idM, 1).show();
+                if (SettingsHelper.isDebug())
+                    Toast.makeText(c, "Hapus SMS id " + idM, 1).show();
 
             }
         } catch (Exception e) {

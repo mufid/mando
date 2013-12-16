@@ -1,5 +1,7 @@
 package com.mando.service;
 
+import com.mando.helper.SettingsHelper;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,7 +31,8 @@ public class MandoSMSReceiver extends BroadcastReceiver {
                 strMessage += "SMS from " + strMsgSrc + " : " + strMsgBody;
 
                 Log.i("mando", strMessage);
-                Toast.makeText(context, strMessage, Toast.LENGTH_LONG).show();
+                if (SettingsHelper.isDebug())
+                    Toast.makeText(context, strMessage, Toast.LENGTH_LONG).show();
 
                 MandoController.processSMS(strMsgBody, strMsgSrc, context);
             }
