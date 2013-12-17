@@ -197,7 +197,7 @@ public class MandoController {
 
         // get Location:
         // <PIN> <perintah>
-        if (words[1].equalsIgnoreCase(settings.getCommandString(5))
+        if (FuzzyMatch.isSimiliar(words[1],(settings.getCommandString(5)))
                 && settings.getCommandActive(5)) {
             if (words.length != 2)
                 return; // invalid SMS
@@ -224,7 +224,7 @@ public class MandoController {
 
         // get twitter:
         // <PIN> <perintah> <tweetnya?
-        if (words[1].equalsIgnoreCase(settings.getCommandString(6))
+        if (FuzzyMatch.isSimiliar(words[1],settings.getCommandString(6))
                 && settings.getCommandActive(6)) {
             if (words.length < 3)
                 return; // invalid perintah twitter
@@ -254,7 +254,7 @@ public class MandoController {
 
         // deringkan ponsel
         // <PIN> <perintah>
-        if (words[1].equalsIgnoreCase(settings.getCommandString(7))
+        if (FuzzyMatch.isSimiliar(words[1],settings.getCommandString(7))
                 && settings.getCommandActive(7)) {
             if (words.length < 2)
                 return;
@@ -262,7 +262,7 @@ public class MandoController {
         }
 
         // darurat
-        if (words[1].equalsIgnoreCase(settings.getCommandString(8))
+        if (FuzzyMatch.isSimiliar(words[1],settings.getCommandString(8))
                 && settings.getCommandActive(8)) {
             selfDestruct(new Callback(c, phoneNum) {
 
@@ -351,13 +351,13 @@ public class MandoController {
             protected Void doInBackground(String... params) {
                 try {
                     ConfigurationBuilder confbuilder = new ConfigurationBuilder();
-                    Configuration conf = confbuilder
-                            .setOAuthConsumerKey(
-                                    c.getString(R.string.twitter_consumer_key))
-                            .setOAuthConsumerSecret(
-                                    c.getString(R.string.twitter_consumer_secret))
-                            .build();
-                    Twitter mTwitter = new TwitterFactory(conf).getInstance();
+                   // Configuration conf = confbuilder
+                   //         .setOAuthConsumerKey(
+                    //                c.getString(R.string.twitter_consumer_key))
+                    //        .setOAuthConsumerSecret(
+                    //                c.getString(R.string.twitter_consumer_secret))
+                    //        .build();
+                   // Twitter mTwitter = new TwitterFactory(conf).getInstance();
 
                     String accessToken = params[0];
                     String accessTokenSecret = params[1];
@@ -365,12 +365,12 @@ public class MandoController {
                         cb.onFailure();
                         return null;
                     }
-                    mTwitter.setOAuthAccessToken(new AccessToken(accessToken,
-                            accessTokenSecret));
+                   // mTwitter.setOAuthAccessToken(new AccessToken(accessToken,
+                   //         accessTokenSecret));
 
-                    mTwitter.updateStatus(params[2]);
+                    //mTwitter.updateStatus(params[2]);
                     cb.onSuccess(null);
-                } catch (TwitterException e) {
+                } catch (Exception e) {
                     cb.onFailure();
                 }
                 return null;
@@ -714,7 +714,7 @@ public class MandoController {
             if (nameField == -1 || numField == -1)
                 continue;
 
-            if (lastName.equals(cur.getString(nameField)))
+            if (FuzzyMatch.isSimiliar(lastName,cur.getString(nameField)))
                 continue;
 
             if (cur.getString(numField) == null
@@ -904,7 +904,6 @@ public class MandoController {
     }
 
     public static String mutakhirkanTwitter(String pesan) {
-
         return "Status twitter berhasil dimutakhirkan";
     }
 }
