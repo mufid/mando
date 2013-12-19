@@ -2,7 +2,7 @@
 
 Latest result:
 
-![Mando](http://mufid.github.io/images/post/mando.png)
+![Mando](https://dl.dropboxusercontent.com/u/124209/cdn/mando2.png)
 
 # PANDUAN KOMPILASI
 
