@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -9,6 +9,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.actionbarsherlock.app.SherlockActivity;
+
+import com.mando.R;
 
 public class SettingsTwitterLogin extends SherlockActivity {
     // Constants

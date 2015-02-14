@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,6 +24,7 @@ import com.mando.helper.SettingsController;
 import com.mando.mailer.EmailSettings;
 import com.mando.mailer.Mailer;
 import com.mando.service.MandoController;
+import com.mando.R;
 
 // Implement LocationListener, biar bisa update lokasi.
 public class SettingsTest extends SherlockActivity {

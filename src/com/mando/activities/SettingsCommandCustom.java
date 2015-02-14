@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.SettingsController;
 import com.mando.mailer.EmailSettings;
+import com.mando.R;
 
 public class SettingsCommandCustom extends SherlockActivity {
     private static final int FROM_TWITTER_LOGIN_WINDOW = 0;

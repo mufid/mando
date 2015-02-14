@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import java.util.Hashtable;
 
@@ -12,6 +12,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.mando.helper.SettingsController;
+import com.mando.R;
 
 public class SettingsPINChange extends SherlockActivity {
 

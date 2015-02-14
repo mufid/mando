@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.mando"
-    android:versionCode="1"
-    android:versionName="1.0" >
-	
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.INTERNET" />
+    android:versionCode="2"
+    android:versionName="1.1" >
+    
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     
     <uses-sdk
         android:minSdkVersion="9"
@@ -27,7 +27,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.mando.SettingsWelcome"
+            android:name="com.mando.activities.SettingsWelcome"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,22 +35,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.mando.SettingsPINChange"></activity>
-        <activity android:name="com.mando.SettingsTest"></activity>
-        <activity android:name="com.mando.SettingsCommandToggle"></activity>
-        <activity android:name="com.mando.SettingsCommandCustom"></activity>
-        <activity android:name="com.mando.SettingsTwitterLogin"></activity>
-        <activity android:name="com.mando.SettingsEmail" android:uiOptions="splitActionBarWhenNarrow"></activity>
+        <activity android:name=".activities.SettingsPINChange"></activity>
+        <activity android:name=".activities.SettingsEmail"></activity>
+        <activity android:name=".activities.SettingsTest"></activity>
+        <activity android:name=".activities.SettingsCommandToggle"></activity>
+        <activity android:name=".activities.SettingsCommandCustom"></activity>
+        <activity android:name=".activities.SettingsTwitterLogin"></activity>
 
-	    <service android:name=".service.MainService"
-	        android:enabled="true">
-		</service>
+        <service android:name=".service.MainService"
+            android:enabled="true">
+        </service>
 
         <receiver android:name=".service.MandoSMSReceiver">
-		    <intent-filter>
-		        <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-		    </intent-filter>
-		</receiver>
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
     </application>
 
     

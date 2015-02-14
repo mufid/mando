@@ -1,4 +1,4 @@
-package com.mando;
+package com.mando.activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,12 +11,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.mando.helper.SettingsController;
+import com.mando.R;
 
 public class SettingsCommandToggle extends SherlockActivity {
 
@@ -39,7 +41,7 @@ public class SettingsCommandToggle extends SherlockActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.Theme_Sherlock_Light);
         setContentView(R.layout.activity_settings_commandtoggle);
-        TableLayout tl = (TableLayout) findViewById(R.id.commandtoggle_list);
+        LinearLayout tl = (LinearLayout) findViewById(R.id.commandtoggle_list);
         final SettingsController s = new SettingsController(this);
         final LayoutInflater inflater = (LayoutInflater) getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
